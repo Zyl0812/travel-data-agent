@@ -1,0 +1,49 @@
+from dataclasses import asdict
+
+from qdrant_client import AsyncQdrantClient, models
+from qdrant_client.conversions.common_types import PointStruct, VectorParams
+
+from app.conf.app_config import app_config
+from app.entities.metric_info import MetricInfo
+
+
+class MetricQdrantRepository:
+    """用于操作字段信息向量集合持久层"""
+
+    collection_name = "data-agent-column"
+
+    def __init__(self, client: AsyncQdrantClient):
+        self.client = client
+
+    async def ensure_collection(self):
+        # 1.判断集合是否存在
+        if not await self.client.collection_exists(
+            collection_name=self.collection_name
+        ):
+            # 2.创建集合
+            await self.client.create_collection(
+                collection_name=self.collection_name,
+                vectors_config=VectorParams(
+                    size=app_config.qdrant.embedding_size,
+                    distance=models.Distance.COSINE,
+                ),
+            )
+
+    async def upsert(
+        self,
+        ids: list[str],
+        embeddings: list[list[float]],
+        payloads: list[MetricInfo],
+        batch_size: int = 10,
+    ):
+        zipped = list(zip(ids, embeddings, payloads))
+        for i in range(0, len(zipped), batch_size):
+            batch = zipped[i : i + batch_size]
+            points = [
+                PointStruct(id=id, vector=embedding, payload=asdict(payload))
+                for id, embedding, payload in batch
+            ]
+            await self.client.upsert(
+                collection_name=self.collection_name,
+                points=points,
+            )

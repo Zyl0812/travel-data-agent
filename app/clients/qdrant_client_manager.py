@@ -57,7 +57,7 @@ if __name__ == "__main__":
                     "VB.NET开发工程师", "Objective-C开发工程师", "Scal"]
         
         points = [models.PointStruct(
-            id=str(uuid.uuid4()),
+            id=uuid.uuid4(),
             vector=await embedding_client_manager.client.aembed_query(keyword),
             payload={"keyword": keyword},
         ) for keyword in keywords]
@@ -66,16 +66,16 @@ if __name__ == "__main__":
             collection_name=collection_name,
             points=points,
         )
-    # asyncio.run(test_add_points())
+    asyncio.run(test_add_points())
     
-    async def test_search():
-        query_keyword = '香蕉'
-        result:QueryResponse = await client.query_points(
-            collection_name=collection_name,
-            query=await embedding_client_manager.client.aembed_query(query_keyword),
-            limit=5,
-            score_threshold=0.7
-        )
-        data_result = [point.payload for point in result.points]
-        print(data_result)
-    asyncio.run(test_search())
+    # async def test_search():
+    #     query_keyword = '香蕉'
+    #     result:QueryResponse = await client.query_points(
+    #         collection_name=collection_name,
+    #         query=await embedding_client_manager.client.aembed_query(query_keyword),
+    #         limit=5,
+    #         score_threshold=0.7
+    #     )
+    #     data_result = [point.payload for point in result.points]
+    #     print(data_result)
+    # asyncio.run(test_search())
