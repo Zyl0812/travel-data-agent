@@ -1,5 +1,5 @@
 from typing import TypedDict
-from langchain_huggingface import HuggingFaceEndpointEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 from app.repositories.es.value_es_repository import ValueESRepository
 from app.repositories.mysql.dw.dw_mysql_repository import DWMySQLRepository
@@ -15,6 +15,6 @@ class DataAgentContext(TypedDict):
     dw_mysql_repository: DWMySQLRepository
     meta_mysql_repository: MetaMySQLRepository
     column_qdrant_repository: ColumnQdrantRepository
-    embedding_client: HuggingFaceEndpointEmbeddings
+    embedding_client: HuggingFaceEmbeddings
     value_es_repository: ValueESRepository
     metric_qdrant_repository: MetricQdrantRepository

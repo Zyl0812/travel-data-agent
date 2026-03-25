@@ -1,4 +1,4 @@
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.entities.column_info import ColumnInfo
 from app.entities.column_metric import ColumnMetric
@@ -13,8 +13,8 @@ from app.repositories.mysql.meta.mappers.table_info_mapper import TableInfoMappe
 class MetaMySQLRepository:
     """用于操作meta数据库"""
 
-    def __init__(self, session: AsyncSession) -> None:
-        self.session = session
+    def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
+        self.session_factory = session_factory
 
     async def save_table_infos(self, table_infos: list[TableInfo]):
         # 1. 将业务对象转为ORM模型对象

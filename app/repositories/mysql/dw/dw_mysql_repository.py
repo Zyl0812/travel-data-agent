@@ -1,14 +1,14 @@
 from typing import cast
 
 from sqlalchemy import Result, text
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 
 class DWMySQLRepository:
     """用于操作dw数据库持久层"""
 
-    def __init__(self, session: AsyncSession) -> None:
-        self.session = session
+    def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
+        self.session_factory = session_factory
 
     async def get_column_types(self, table_name: str) -> dict[str, str]:
         """根据表明获取该表所有字段类型"""

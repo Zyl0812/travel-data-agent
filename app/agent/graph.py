@@ -82,11 +82,19 @@ if __name__ == "__main__":
         qdrant_client_manager.init()
         es_client_manager.init()
         
+        assert embedding_client_manager.client is not None
+        assert qdrant_client_manager.client is not None
+        assert es_client_manager.client is not None
+        assert meta_mysql_client_manager.session_factory is not None
+        assert dw_mysql_client_manager.session_factory is not None
+
         context = DataAgentContext(
             embedding_client=embedding_client_manager.client,
             column_qdrant_repository=ColumnQdrantRepository(qdrant_client_manager.client),
             metric_qdrant_repository=MetricQdrantRepository(qdrant_client_manager.client),
-            value_es_repository=ValueESRepository(es_client_manager.client)
+            value_es_repository=ValueESRepository(es_client_manager.client),
+            meta_mysql_repository=MetaMySQLRepository(meta_mysql_client_manager.session_factory),
+            dw_mysql_repository=DWMySQLRepository(dw_mysql_client_manager.session_factory),
         )
         
         async for chunk in graph.astream(input=DataAgentState(query="统计华北地区卖了多少钱"), context=context, stream_mode="updates"):

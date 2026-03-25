@@ -39,8 +39,11 @@ class DBInfoState(TypedDict):
     version: str
 
 
-class DataAgentState(TypedDict):
+class _DataAgentStateRequired(TypedDict):
     query: str  # 用户查询
+
+
+class DataAgentState(_DataAgentStateRequired, total=False):
     keywords: list[str]  # 用户查询的关键字
 
     retrieved_columns: list[ColumnInfo]  # 召回的字段信息
