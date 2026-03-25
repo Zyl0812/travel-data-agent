@@ -52,4 +52,5 @@ class ColumnQdrantRepository:
             score_threshold=score,
         )
         
-        return [ColumnInfo(**point.payload) for point in result.points]
+        return [ColumnInfo(**point.payload) for point in result.points if point.payload is not None]
+        

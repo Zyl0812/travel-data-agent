@@ -56,4 +56,4 @@ class MetricQdrantRepository:
             score_threshold=score,
         )
         
-        return [MetricInfo(**point.payload) for point in result.points]
+        return [MetricInfo(**point.payload) for point in result.points if point.payload is not None]

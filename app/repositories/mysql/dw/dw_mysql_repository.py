@@ -1,3 +1,5 @@
+from typing import cast
+
 from sqlalchemy import Result, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,8 +18,8 @@ class DWMySQLRepository:
 
     async def get_column_values(
         self, table_name: str, column_name: str, limit: int = 10
-    ):
+    ) -> list[str]:
         """根据表名和字段名获取该字段部分取值"""
         sql = f"SELECT DISTINCT {column_name} FROM {table_name} LIMIT {limit}"
         result: Result = await self.session.execute(text(sql))
-        return result.scalars().fetchall()
+        return cast(list[str], result.scalars().fetchall())

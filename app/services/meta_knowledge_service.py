@@ -1,7 +1,8 @@
 import uuid
 from pathlib import Path
+from typing import cast
 
-from langchain_huggingface.embeddings import HuggingFaceEndpointEmbeddings
+from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from omegaconf import OmegaConf
 
 from app.conf.meta_config import MetaConfig
@@ -25,7 +26,7 @@ class MetaKnowledgeService:
         dw_mysql_repository: DWMySQLRepository,
         meta_mysql_repository: MetaMySQLRepository,
         column_qdrant_repository: ColumnQdrantRepository,
-        embedding_client: HuggingFaceEndpointEmbeddings,
+        embedding_client: HuggingFaceEmbeddings,
         value_es_repository: ValueESRepository,
         metric_qdrant_repository: MetricQdrantRepository,
     ) -> None:
@@ -43,9 +44,9 @@ class MetaKnowledgeService:
         # 1.2 通过加载dataClass对象获取存放数据结构
         structured = OmegaConf.structured(MetaConfig)
         # 1.3 将内容跟结构合并，转为dataclass对象
-        meta_config: MetaConfig = OmegaConf.to_object(
+        meta_config: MetaConfig = cast(MetaConfig, OmegaConf.to_object(
             OmegaConf.merge(structured, context)
-        )
+        ))
         logger.info(meta_config)
 
         # 2. 核心-处理表格（包含字段）信息
@@ -84,6 +85,10 @@ class MetaKnowledgeService:
         column_infos: list[ColumnInfo] = []
 
         # 2. 解析配置对象中的表信息
+        if meta_config.tables is None:
+            logger.error("配置文件中未定义表信息")
+            return column_infos
+            
         for table in meta_config.tables:
             table_info = TableInfo(
                 id=table.name,
@@ -181,11 +186,15 @@ class MetaKnowledgeService:
         # 2. 构建保存文档所需要的数据
         values_infos = []
         # 2.1 获取到需要同步的数据到ES字段列表
+        if meta_config.tables is None:
+            logger.error('元数据库表信息不存在')
+            return
+            
         column2es = [
             column.name
             for table in meta_config.tables
             for column in table.columns
-            if column.sync == True
+            if column.sync
         ]
 
         # 2.2 遍历字段信息列表，处理需要同步到ES的字段
@@ -214,7 +223,11 @@ class MetaKnowledgeService:
         # 1. 初始化存放指标信息的dataclass列表，字段指标关系列表
         metric_infos: list[MetricInfo] = []
         column_metric_infos: list[ColumnMetric] = []
-
+        
+        if meta_config.metrics is None:
+            logger.error('元数据库指标信息不存在')
+            return metric_infos
+        
         for metric in meta_config.metrics:
             metric_info = MetricInfo(
                 id=metric.name,

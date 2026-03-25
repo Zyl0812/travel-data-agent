@@ -23,6 +23,12 @@ async def build(meta_config_path: Path):
     es_client_manager.init()
     
     # 2. 创建业务层对象，调用元数据库业务层对象完成元数据库的构建
+    assert dw_mysql_client_manager.session_factory is not None
+    assert meta_mysql_client_manager.session_factory is not None
+    assert qdrant_client_manager.client is not None
+    assert embedding_client_manager.client is not None
+    assert es_client_manager.client is not None
+    
     async with (dw_mysql_client_manager.session_factory() as dw_session, meta_mysql_client_manager.session_factory() as meta_session):
 
         meta_knowledge_service = MetaKnowledgeService(

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
+from typing import cast
 
 
 @dataclass
@@ -80,7 +81,7 @@ structured = OmegaConf.structured(AppConfig)
 
 # 3. 通过OmegaConf.merge()方法将omegaConf对象和结构化对象进行合并 #4. 转为dataclasss对象
 # 将应用配置对象app_config 对外提供调用
-app_config: AppConfig = OmegaConf.to_object(OmegaConf.merge(structured, context))
+app_config: AppConfig = cast(AppConfig, OmegaConf.to_object(OmegaConf.merge(structured, context)))
 
 # if __name__ == '__main__':
 #     print(app_config.db_dw)
