@@ -10,7 +10,7 @@ from app.entities.metric_info import MetricInfo
 class MetricQdrantRepository:
     """用于操作字段信息向量集合持久层"""
 
-    collection_name = "data-agent-column"
+    collection_name = "data-agent-metric"
 
     def __init__(self, client: AsyncQdrantClient):
         self.client = client
@@ -47,3 +47,13 @@ class MetricQdrantRepository:
                 collection_name=self.collection_name,
                 points=points,
             )
+            
+    async def search(self, embedding: list[float], score: float=0.7, limit: int = 10) -> list[MetricInfo]:
+        result = await self.client.query_points(
+            collection_name=self.collection_name,
+            query=embedding,
+            limit=limit,
+            score_threshold=score,
+        )
+        
+        return [MetricInfo(**point.payload) for point in result.points]

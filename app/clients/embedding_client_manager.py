@@ -1,23 +1,22 @@
 import asyncio
 
-from langchain_huggingface.embeddings import HuggingFaceEndpointEmbeddings
+from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from typing import Optional
-from app.conf.app_config import app_config, EmbeddingConfig
+
+from app.conf.app_config import app_config
+
 
 class EmbeddingClientManager:
-    
-    def __init__(self, embedding_config: EmbeddingConfig):
-        self.embedding_config = embedding_config
-        self.client: Optional[HuggingFaceEndpointEmbeddings] = None
-        
-    def _get_url(self):
-        return f'http://{self.embedding_config.host}:{self.embedding_config.port}'
-        
+
+    def __init__(self):
+        self.client: Optional[HuggingFaceEmbeddings] = None
+
     def init(self):
-        self.client = HuggingFaceEndpointEmbeddings(model=self._get_url())
+        model_name = app_config.embedding.model_path
+        self.client = HuggingFaceEmbeddings(model_name=model_name)
         
         
-embedding_client_manager = EmbeddingClientManager(app_config.embedding)
+embedding_client_manager = EmbeddingClientManager()
 
 if __name__ == "__main__":
     embedding_client_manager.init()

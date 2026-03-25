@@ -42,9 +42,7 @@ class QdrantConfig:
 
 @dataclass
 class EmbeddingConfig:
-    host: str
-    port: int
-    model: str
+    model_path: str
 
 
 @dataclass
@@ -58,6 +56,7 @@ class ESConfig:
 class LLMConfig:
     model_name: str
     api_key: str
+    base_url: str
 
 
 @dataclass
