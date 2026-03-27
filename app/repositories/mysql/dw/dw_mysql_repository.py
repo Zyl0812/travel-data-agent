@@ -1,14 +1,14 @@
 from typing import cast
 
 from sqlalchemy import Result, text
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class DWMySQLRepository:
     """用于操作dw数据库持久层"""
 
-    def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
-        self.session_factory = session_factory
+    def __init__(self, session: AsyncSession) -> None:
+        self.session = session
 
     async def get_column_types(self, table_name: str) -> dict[str, str]:
         """根据表明获取该表所有字段类型"""
@@ -23,3 +23,22 @@ class DWMySQLRepository:
         sql = f"SELECT DISTINCT {column_name} FROM {table_name} LIMIT {limit}"
         result: Result = await self.session.execute(text(sql))
         return cast(list[str], result.scalars().fetchall())
+        
+    async def get_db_info(self) -> dict[str, str]:
+        """获取数据库信息"""
+        # 1. 获取数据库方言
+        dialect_name = self.session.bind.dialect.name
+        # 2. 查询数据库管理系统版本
+        result = await self.session.execute(text("SELECT VERSION()"))
+        version = str(result.scalar())
+        
+        return {"dialect": dialect_name, "version": version}
+        
+    async def validate_sql(self, sql: str):
+        """验证SQL语句是否合法"""
+        await self.session.execute(text('EXPLAIN ' + sql))
+        
+    async def execute_sql(self, sql: str):
+        """执行SQL语句"""
+        result = await self.session.execute(text(sql))
+        return [dict(row) for row in result.mappings().fetchall()]

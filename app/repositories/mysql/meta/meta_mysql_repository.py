@@ -1,9 +1,12 @@
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.entities.column_info import ColumnInfo
 from app.entities.column_metric import ColumnMetric
 from app.entities.metric_info import MetricInfo
 from app.entities.table_info import TableInfo
+from app.models.column_info_mysql import ColumnInfoMySQL
+from app.models.table_info_mysql import TableInfoMySQL
 from app.repositories.mysql.meta.mappers.column_info_mapper import ColumnInfoMapper
 from app.repositories.mysql.meta.mappers.column_metric_mapper import ColumnMetricMapper
 from app.repositories.mysql.meta.mappers.metric_info_mapper import MetricInfoMapper
@@ -13,8 +16,11 @@ from app.repositories.mysql.meta.mappers.table_info_mapper import TableInfoMappe
 class MetaMySQLRepository:
     """用于操作meta数据库"""
 
-    def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
-        self.session_factory = session_factory
+    def __init__(self, session: AsyncSession) -> None:
+        self.session = session
+
+    def begin(self):
+        return self.session.begin()
 
     async def save_table_infos(self, table_infos: list[TableInfo]):
         # 1. 将业务对象转为ORM模型对象
@@ -45,3 +51,27 @@ class MetaMySQLRepository:
             for column_metric_info in column_metric_infos
         ]
         self.session.add_all(models)
+        
+    async def get_column_info_by_id(self, column_id: str) -> ColumnInfo:
+        column_info_mysql: ColumnInfoMySQL | None = await self.session.get(ColumnInfoMySQL, column_id)
+
+        if column_info_mysql is None:
+            raise ValueError(f"ColumnInfo with id {column_id} not found")
+
+        return ColumnInfoMapper.to_entity(column_info_mysql)
+    
+    
+    async def get_key_columns_by_table_id(self, table_id: str) -> list[ColumnInfo]:
+        stmt = select(ColumnInfoMySQL).where(ColumnInfoMySQL.table_id == table_id, ColumnInfoMySQL.role.in_(['primary_key', 'foreign_key']))
+        
+        result = await self.session.scalars(stmt)
+        
+        return [ColumnInfoMapper.to_entity(column_info_mysql) for column_info_mysql in result.all()]
+    
+    async def get_table_info_by_id(self, table_id: str) -> TableInfo:
+        table_info_mysql: TableInfoMySQL | None = await self.session.get(TableInfoMySQL, table_id)
+
+        if table_info_mysql is None:
+            raise ValueError(f"TableInfo with id {table_id} not found")
+
+        return TableInfoMapper.to_entity(table_info_mysql)

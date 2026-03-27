@@ -41,11 +41,12 @@ async def build(meta_config_path: Path):
         )
         
         await meta_knowledge_service.build(meta_config_path)
-        # 3. 关闭资源
-        await dw_mysql_client_manager.close()
-        await meta_mysql_client_manager.close()
-        await qdrant_client_manager.close()
-        await es_client_manager.close()
+
+    # 3. 关闭资源
+    await dw_mysql_client_manager.close()
+    await meta_mysql_client_manager.close()
+    await qdrant_client_manager.close()
+    await es_client_manager.close()
     
 if __name__ == '__main__':
     

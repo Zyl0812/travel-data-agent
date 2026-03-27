@@ -46,5 +46,5 @@ async def recall_value(state: DataAgentState, runtime: Runtime[DataAgentContext]
         return {'retrieved_value_map': retrieved_value_map}
     except Exception as e:
         logger.error(f"召回字段取值失败: {str(e)}")
-        writer({"type": "progress", "step": "召回字段取值", "status": "failed"})
+        writer({"type": "progress", "step": "召回字段取值", "status": "error"})
         raise

@@ -121,7 +121,7 @@ class MetaKnowledgeService:
                 column_infos.append(column_info)
             table_infos.append(table_info)
 
-        async with self.meta_mysql_repository.session.begin():
+        async with self.meta_mysql_repository.begin():
             await self.meta_mysql_repository.save_table_infos(table_infos)
             await self.meta_mysql_repository.save_column_infos(column_infos)
 
@@ -245,7 +245,7 @@ class MetaKnowledgeService:
             metric_infos.append(metric_info)
 
         # 2. 调用元数据库持久层保存指标信息，字段指标关系信息
-        async with self.meta_mysql_repository.session.begin():
+        async with self.meta_mysql_repository.begin():
             await self.meta_mysql_repository.save_metric_infos(metric_infos)
             await self.meta_mysql_repository.save_column_metric_infos(
                 column_metric_infos

@@ -51,6 +51,6 @@ async def recall_metric(state: DataAgentState, runtime: Runtime[DataAgentContext
         return {"retrieved_metrics": list(retrieved_metric_map.values())}
     
     except Exception as e:
-        writer({"type": "progress", "step": "召回指标", "status": "failed", "error": str(e)})
+        writer({"type": "progress", "step": "召回指标", "status": "error"})
         logger.error(f"召回字段失败: {str(e)}")
         raise

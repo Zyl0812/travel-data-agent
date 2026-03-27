@@ -88,18 +88,21 @@ if __name__ == "__main__":
         assert meta_mysql_client_manager.session_factory is not None
         assert dw_mysql_client_manager.session_factory is not None
 
-        context = DataAgentContext(
-            embedding_client=embedding_client_manager.client,
-            column_qdrant_repository=ColumnQdrantRepository(qdrant_client_manager.client),
-            metric_qdrant_repository=MetricQdrantRepository(qdrant_client_manager.client),
-            value_es_repository=ValueESRepository(es_client_manager.client),
-            meta_mysql_repository=MetaMySQLRepository(meta_mysql_client_manager.session_factory),
-            dw_mysql_repository=DWMySQLRepository(dw_mysql_client_manager.session_factory),
-        )
-        
-        async for chunk in graph.astream(input=DataAgentState(query="统计华北地区卖了多少钱"), context=context, stream_mode="updates"):
-            
-            print(chunk)
+        async with (
+            meta_mysql_client_manager.session_factory() as meta_session,
+            dw_mysql_client_manager.session_factory() as dw_session,
+        ):
+            context = DataAgentContext(
+                embedding_client=embedding_client_manager.client,
+                column_qdrant_repository=ColumnQdrantRepository(qdrant_client_manager.client),
+                metric_qdrant_repository=MetricQdrantRepository(qdrant_client_manager.client),
+                value_es_repository=ValueESRepository(es_client_manager.client),
+                meta_mysql_repository=MetaMySQLRepository(meta_session),
+                dw_mysql_repository=DWMySQLRepository(dw_session),
+            )
+
+            async for chunk in graph.astream(input=DataAgentState(query="统计华北地区卖了多少钱"), context=context, stream_mode="custom"):
+                print(chunk)
         
         await qdrant_client_manager.close()
         await es_client_manager.close()
