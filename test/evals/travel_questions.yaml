@@ -1,0 +1,93 @@
+evals:
+  # ===== 经营指标场景（§5.1）=====
+  - id: 1
+    category: "经营指标"
+    question: "本月订单量是多少"
+    expected_tables: ["orders"]
+    expected_columns: ["created_at"]
+
+  - id: 2
+    category: "经营指标"
+    question: "最近30天收入金额是多少"
+    expected_tables: ["orders", "order_items"]
+    expected_columns: ["pay_amount", "created_at"]
+
+  - id: 3
+    category: "经营指标"
+    question: "退款率最高的前十个商品是什么"
+    expected_tables: ["order_items", "refund_requests"]
+    expected_columns: ["refund_status", "product_type_code"]
+
+  - id: 4
+    category: "经营指标"
+    question: "本月优惠券核销金额是多少"
+    expected_tables: ["order_coupon_usages", "user_coupons"]
+    expected_columns: ["discount_amount", "used_at"]
+
+  - id: 5
+    category: "经营指标"
+    question: "最近7天日均订单量是多少"
+    expected_tables: ["orders"]
+    expected_columns: ["created_at"]
+
+  # ===== 商品维度分析场景（§5.2）=====
+  - id: 6
+    category: "商品维度"
+    question: "哪个目的地订单量最多"
+    expected_tables: ["orders", "order_items", "hotels", "areas"]
+    expected_columns: ["area_name", "order_id"]
+
+  - id: 7
+    category: "商品维度"
+    question: "哪种商品类型销售额最高"
+    expected_tables: ["order_items"]
+    expected_columns: ["product_type_code", "pay_amount"]
+
+  - id: 8
+    category: "商品维度"
+    question: "哪个供应商退款率最高"
+    expected_tables: ["suppliers", "order_items", "refund_requests"]
+    expected_columns: ["supplier_name", "refund_status"]
+
+  - id: 9
+    category: "商品维度"
+    question: "各渠道订单占比是多少"
+    expected_tables: ["orders", "channels"]
+    expected_columns: ["channel_code", "order_id"]
+
+  - id: 10
+    category: "商品维度"
+    question: "五星酒店平均房价是多少"
+    expected_tables: ["hotels", "hotel_room_types", "hotel_room_daily"]
+    expected_columns: ["star_rating_code", "sale_price_amount"]
+
+  # ===== 趋势对比场景（§5.3）=====
+  - id: 11
+    category: "趋势对比"
+    question: "最近三个月订单量变化趋势"
+    expected_tables: ["orders"]
+    expected_columns: ["created_at"]
+
+  - id: 12
+    category: "趋势对比"
+    question: "本月和上月机票销量对比"
+    expected_tables: ["order_items"]
+    expected_columns: ["product_type_code", "created_at"]
+
+  - id: 13
+    category: "趋势对比"
+    question: "节假日和非节假日客单价差异"
+    expected_tables: ["orders"]
+    expected_columns: ["pay_amount", "created_at"]
+
+  - id: 14
+    category: "趋势对比"
+    question: "各商品类型周销量排名变化"
+    expected_tables: ["order_items"]
+    expected_columns: ["product_type_code", "created_at"]
+
+  - id: 15
+    category: "趋势对比"
+    question: "最近30天每日收入趋势"
+    expected_tables: ["orders"]
+    expected_columns: ["pay_amount", "created_at"]

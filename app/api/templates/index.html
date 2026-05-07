@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Travel Data Agent · 旅游问数</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Brand */
+    --primary:          #cc785c;
+    --primary-active:   #a9583e;
+    --primary-disabled: #e6dfd8;
+    --accent-teal:      #5db8a6;
+    --accent-amber:     #e8a55a;
+
+    /* Surface (cream) */
+    --canvas:               #faf9f5;
+    --surface-soft:         #f5f0e8;
+    --surface-card:         #efe9de;
+    --surface-cream-strong: #e8e0d2;
+
+    /* Surface (dark) */
+    --surface-dark:          #181715;
+    --surface-dark-elevated: #252320;
+    --surface-dark-soft:     #1f1e1b;
+
+    /* Hairlines */
+    --hairline:      #e6dfd8;
+    --hairline-soft: #ebe6df;
+
+    /* Text */
+    --ink:         #141413;
+    --body-strong: #252523;
+    --body:        #3d3d3a;
+    --muted:       #6c6a64;
+    --muted-soft:  #8e8b82;
+    --on-primary:  #ffffff;
+    --on-dark:     #faf9f5;
+    --on-dark-soft:#a09d96;
+
+    /* Semantic */
+    --success: #5db872;
+    --warning: #d4a017;
+    --error:   #c64545;
+
+    /* Radius */
+    --r-sm:   6px;
+    --r-md:   8px;
+    --r-lg:   12px;
+    --r-xl:   16px;
+    --r-pill: 9999px;
+
+    /* Type */
+    --serif: 'Cormorant Garamond', 'Tiempos Headline', Garamond, 'Times New Roman', serif;
+    --sans:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --t: 180ms;
+    --ease: cubic-bezier(.4,0,.2,1);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection { background: var(--primary); color: #fff; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--surface-cream-strong); }
+
+  /* ─── TOPBAR ─── */
+  .topbar {
+    position: sticky; top: 0;
+    height: 64px;
+    background: rgba(250,249,245,.9);
+    backdrop-filter: blur(16px) saturate(150%);
+    border-bottom: 1px solid var(--hairline);
+    display: flex; align-items: center;
+    padding: 0 32px;
+    z-index: 50;
+  }
+  .brand {
+    display: flex; align-items: baseline; gap: 8px;
+    text-decoration: none; color: var(--ink);
+  }
+  .brand-mark {
+    width: 18px; height: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    transform: translateY(2px);
+  }
+  .brand-mark svg { width: 100%; height: 100%; }
+  .brand-name {
+    font-family: var(--sans);
+    font-size: 17px; font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .brand-name .accent { color: var(--primary); }
+
+  .top-meta {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 24px;
+  }
+  .conn {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--muted);
+  }
+  .conn-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 0 3px rgba(93,184,114,.18);
+  }
+  .conn-dot.off { background: var(--error); box-shadow: 0 0 0 3px rgba(198,69,69,.18); }
+  .top-link {
+    font-size: 14px; font-weight: 500; color: var(--ink);
+    text-decoration: none;
+    cursor: pointer; background: none; border: none;
+    font-family: var(--sans);
+  }
+  .top-link:hover { color: var(--primary); }
+
+  /* ─── HERO BAND ─── */
+  .hero {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 56px 32px 24px;
+  }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary);
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: 56px;
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-top: 16px;
+    max-width: 820px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--primary);
+  }
+  .hero-sub {
+    margin-top: 18px;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--body);
+    max-width: 620px;
+  }
+
+  /* ─── LAYOUT ─── */
+  .layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 32px 96px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 32px;
+    align-items: start;
+  }
+  @media (max-width: 980px) {
+    .layout { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 40px; }
+  }
+  .layout.solo { grid-template-columns: minmax(0, 1fr); }
+
+  .col-main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+  .col-side {
+    display: flex; flex-direction: column; gap: 20px;
+    padding-right: 4px;
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-lg);
+  }
+  .card-soft { background: var(--surface-card); border: none; }
+  .card-dark {
+    background: var(--surface-dark);
+    color: var(--on-dark);
+    border-radius: var(--r-lg);
+  }
+  .card-hd {
+    padding: 16px 20px 0;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .card-title {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .card-title-mark {
+    color: var(--primary);
+    font-family: var(--mono);
+    font-weight: 500;
+  }
+  .card-bd { padding: 16px 20px 20px; }
+
+  /* ─── QUERY CARD ─── */
+  .query-card {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-lg);
+    padding: 24px 24px 16px;
+    transition: border-color var(--t) var(--ease), box-shadow var(--t) var(--ease);
+  }
+  .query-card.focus-in {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(204,120,92,.15);
+  }
+  .q-label {
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .q-textarea {
+    width: 100%;
+    background: transparent;
+    border: none; outline: none;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    resize: none;
+    min-height: 70px;
+    max-height: 220px;
+  }
+  .q-textarea::placeholder {
+    color: var(--muted-soft);
+    font-style: italic;
+  }
+
+  .q-examples {
+    margin-top: 8px;
+    padding-top: 14px;
+    border-top: 1px solid var(--hairline-soft);
+  }
+  .q-eg-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-soft);
+    margin-bottom: 10px;
+  }
+  .q-chips {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .chip {
+    padding: 6px 12px;
+    border-radius: var(--r-pill);
+    background: var(--surface-card);
+    border: 1px solid transparent;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--body-strong);
+    cursor: pointer;
+    transition: all var(--t) var(--ease);
+    font-family: var(--sans);
+  }
+  .chip:hover {
+    background: var(--surface-cream-strong);
+    color: var(--ink);
+  }
+
+  .q-footer {
+    margin-top: 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .q-hint {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .q-hint kbd {
+    display: inline-flex; align-items: center;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--surface-card);
+    border: 1px solid var(--hairline);
+    font-size: 11px;
+    color: var(--ink);
+    font-family: var(--mono);
+    margin: 0 2px;
+  }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0 22px;
+    height: 40px;
+    background: var(--primary);
+    color: var(--on-primary);
+    border: none;
+    border-radius: var(--r-md);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--t) var(--ease);
+    white-space: nowrap;
+  }
+  .btn-primary:hover { background: var(--primary-active); }
+  .btn-primary:active { background: var(--primary-active); }
+  .btn-primary:disabled {
+    background: var(--primary-disabled);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+  .btn-primary svg { width: 12px; height: 12px; }
+
+  /* ─── PIPELINE CARD ─── */
+  .pipeline {
+    background: var(--surface-card);
+    border-radius: var(--r-lg);
+    padding: 24px 28px 28px;
+  }
+  .pipeline-hd {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .pipeline-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .pipeline-status {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+  .pipeline-status.running { color: var(--primary); }
+  .pipeline-status.done    { color: var(--success); }
+  .pipeline-status.err     { color: var(--error); }
+
+  .pipeline-progress {
+    height: 2px;
+    background: rgba(20,20,19,.06);
+    margin-top: 10px;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .pipeline-progress-bar {
+    height: 100%;
+    background: var(--primary);
+    width: 0%;
+    transition: width .35s var(--ease);
+  }
+
+  .pl-list { margin-top: 18px; display: flex; flex-direction: column; }
+
+  /* Step row */
+  .pl-step {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items: center;
+    column-gap: 14px;
+    padding: 8px 0;
+    position: relative;
+  }
+  .pl-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 13.5px;
+    top: 26px;
+    bottom: -8px;
+    width: 1px;
+    background: var(--hairline);
+  }
+  .pl-step.parallel:not(:last-child)::after {
+    bottom: -8px;
+  }
+
+  /* Spike-mark style node */
+  .pl-node {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 1;
+    border-radius: 50%;
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    transition: all var(--t) var(--ease);
+  }
+  .pl-node-glyph {
+    color: var(--muted-soft);
+    width: 12px; height: 12px;
+    transition: color var(--t);
+  }
+  .pl-step.r .pl-node {
+    border-color: var(--primary);
+    background: var(--canvas);
+    box-shadow: 0 0 0 4px rgba(204,120,92,.12);
+  }
+  .pl-step.r .pl-node-glyph { color: var(--primary); animation: spin 1.4s linear infinite; }
+  .pl-step.s .pl-node {
+    border-color: var(--ink);
+    background: var(--ink);
+  }
+  .pl-step.s .pl-node-glyph { color: var(--canvas); }
+  .pl-step.e .pl-node {
+    border-color: var(--error);
+    background: rgba(198,69,69,.1);
+  }
+  .pl-step.e .pl-node-glyph { color: var(--error); }
+  .pl-step.skip .pl-node {
+    border-color: var(--hairline);
+    background: var(--canvas);
+    opacity: .55;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .pl-name {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--body);
+    transition: color var(--t);
+    font-family: var(--sans);
+  }
+  .pl-step.r .pl-name { color: var(--ink); font-weight: 500; }
+  .pl-step.s .pl-name { color: var(--ink); }
+  .pl-step.e .pl-name { color: var(--error); font-weight: 500; }
+  .pl-step.skip .pl-name { color: var(--muted-soft); font-style: italic; }
+
+  .pl-meta {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .pl-step.r .pl-meta { color: var(--primary); }
+  .pl-step.s .pl-meta { color: var(--muted); }
+  .pl-step.e .pl-meta { color: var(--error); }
+
+  /* Parallel group */
+  .pl-parallel-wrap {
+    margin-left: 41px;
+    border-left: 1px dashed var(--hairline);
+    padding: 4px 0 4px 16px;
+  }
+  .pl-parallel-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted-soft);
+    margin: 4px 0 6px;
+  }
+  .pl-psub {
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    align-items: center;
+    column-gap: 10px;
+    padding: 4px 0;
+  }
+  .pl-pnode {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--t) var(--ease);
+  }
+  .pl-pnode-glyph {
+    width: 7px; height: 7px;
+    color: var(--muted-soft);
+  }
+  .pl-psub.r .pl-pnode {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(204,120,92,.12);
+  }
+  .pl-psub.r .pl-pnode-glyph { color: var(--primary); animation: spin 1.4s linear infinite; }
+  .pl-psub.s .pl-pnode { background: var(--ink); border-color: var(--ink); }
+  .pl-psub.s .pl-pnode-glyph { color: var(--canvas); }
+  .pl-psub.e .pl-pnode { background: rgba(198,69,69,.1); border-color: var(--error); }
+  .pl-psub.e .pl-pnode-glyph { color: var(--error); }
+  .pl-pname {
+    font-size: 14px;
+    color: var(--body);
+    font-family: var(--sans);
+  }
+  .pl-psub.r .pl-pname { color: var(--ink); font-weight: 500; }
+  .pl-psub.s .pl-pname { color: var(--ink); }
+  .pl-psub.e .pl-pname { color: var(--error); }
+
+  /* ─── RESULTS ─── */
+  .results-card {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+  .results-hd {
+    padding: 20px 24px 0;
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px;
+  }
+  .results-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .results-meta {
+    display: flex; gap: 18px;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+  .results-meta b {
+    color: var(--ink); font-weight: 500;
+  }
+
+  .results-tabs {
+    margin: 14px 24px 0;
+    display: flex; gap: 4px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .results-tab {
+    padding: 10px 14px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color var(--t), border-color var(--t);
+  }
+  .results-tab:hover { color: var(--ink); }
+  .results-tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--primary);
+  }
+
+  .results-body { padding: 18px 24px 24px; }
+
+  .tbl-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+  }
+  .data-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-family: var(--sans);
+  }
+  .data-tbl th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--surface-soft);
+    border-bottom: 1px solid var(--hairline);
+    white-space: nowrap;
+    position: sticky; top: 0;
+  }
+  .data-tbl td {
+    padding: 10px 14px;
+    color: var(--body);
+    border-bottom: 1px solid var(--hairline-soft);
+    white-space: nowrap;
+    font-family: var(--mono);
+    font-size: 12.5px;
+  }
+  .data-tbl tr:last-child td { border-bottom: none; }
+  .data-tbl tr:hover td { background: var(--surface-soft); }
+  .td-num { text-align: right; color: var(--ink); font-weight: 500; }
+  .td-null { color: var(--muted-soft); font-style: italic; }
+
+  .empty-state {
+    padding: 56px 24px;
+    text-align: center;
+    color: var(--muted);
+  }
+  .empty-state .empty-icon {
+    width: 44px; height: 44px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    background: var(--surface-card);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+  }
+  .empty-state .empty-t {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .empty-state .empty-d { font-size: 13px; color: var(--muted); }
+
+  .err-block {
+    padding: 16px 18px;
+    background: rgba(198,69,69,.06);
+    border: 1px solid rgba(198,69,69,.25);
+    border-radius: var(--r-md);
+    color: var(--error);
+  }
+  .err-t { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+  .err-msg { font-family: var(--mono); font-size: 12px; line-height: 1.6; color: #883535; word-break: break-word; }
+
+  .chart-wrap { padding-top: 4px; }
+  .chart-canvas-wrap {
+    position: relative;
+    height: 280px;
+    padding: 8px 0;
+  }
+
+  /* ─── SQL CARD (dark navy product mockup) ─── */
+  .sql-card {
+    background: var(--surface-dark);
+    color: var(--on-dark);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+  .sql-card-hd {
+    padding: 14px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+  .sql-card-title {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--on-dark-soft);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .sql-traffic {
+    display: inline-flex; gap: 5px;
+  }
+  .sql-traffic span {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--surface-dark-elevated);
+  }
+  .sql-copy-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    border-radius: var(--r-sm);
+    background: var(--surface-dark-elevated);
+    border: 1px solid rgba(255,255,255,.06);
+    color: var(--on-dark-soft);
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--t);
+  }
+  .sql-copy-btn:hover { color: var(--on-dark); border-color: rgba(255,255,255,.12); }
+  .sql-pre {
+    margin: 0;
+    padding: 18px 20px 22px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--on-dark);
+    min-height: 110px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .sql-pre .placeholder {
+    color: var(--on-dark-soft);
+    font-style: italic;
+  }
+  /* SQL syntax tones */
+  .sql-pre .kw  { color: #e8a55a; font-weight: 500; }
+  .sql-pre .fn  { color: #cc785c; }
+  .sql-pre .str { color: #b8d4a8; }
+  .sql-pre .num { color: #5db8a6; }
+  .sql-pre .com { color: #6c6a64; font-style: italic; }
+
+  /* ─── ENTITY CARD ─── */
+  .ent-section { margin-bottom: 16px; }
+  .ent-section:last-child { margin-bottom: 0; }
+  .ent-lbl {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted-soft);
+    margin-bottom: 8px;
+  }
+  .ent-tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .tag {
+    padding: 4px 10px;
+    border-radius: var(--r-pill);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: var(--sans);
+    border: 1px solid var(--hairline);
+    background: var(--canvas);
+    color: var(--body-strong);
+    transition: all var(--t);
+  }
+  .tag-table { background: var(--surface-card); color: var(--ink); border-color: transparent; }
+  .tag-metric {
+    background: rgba(204,120,92,.1);
+    color: var(--primary);
+    border-color: rgba(204,120,92,.25);
+  }
+  .tag-col {
+    background: rgba(93,184,166,.12);
+    color: #2d6f60;
+    border-color: rgba(93,184,166,.3);
+  }
+  .ent-none {
+    font-size: 13px;
+    color: var(--muted-soft);
+    font-style: italic;
+  }
+
+  /* ─── FOLLOW-UP CARD ─── */
+  .fu-list { display: flex; flex-direction: column; gap: 4px; }
+  .fu-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 4px;
+    cursor: pointer;
+    color: var(--body);
+    font-size: 14px;
+    line-height: 1.4;
+    border-bottom: 1px solid var(--hairline-soft);
+    transition: color var(--t), padding var(--t);
+  }
+  .fu-item:last-child { border-bottom: none; }
+  .fu-item:hover {
+    color: var(--primary);
+    padding-left: 6px;
+  }
+  .fu-arrow {
+    flex-shrink: 0;
+    color: var(--primary);
+    width: 14px; height: 14px;
+    opacity: .9;
+    transition: transform var(--t);
+  }
+  .fu-item:hover .fu-arrow { transform: translate(2px,-2px); }
+
+  /* ─── Settings drawer ─── */
+  .drawer-overlay {
+    position: fixed; inset: 0;
+    background: rgba(20,20,19,.32);
+    opacity: 0; pointer-events: none;
+    transition: opacity var(--t);
+    z-index: 100;
+  }
+  .drawer-overlay.open { opacity: 1; pointer-events: all; }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: 380px;
+    background: var(--canvas);
+    border-left: 1px solid var(--hairline);
+    transform: translateX(100%);
+    transition: transform .28s var(--ease);
+    z-index: 101;
+    display: flex; flex-direction: column;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-hd {
+    padding: 22px 28px;
+    border-bottom: 1px solid var(--hairline);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .drawer-title {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .drawer-close {
+    width: 32px; height: 32px;
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    background: var(--canvas);
+    color: var(--muted);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .drawer-close:hover { color: var(--ink); border-color: var(--ink); }
+  .drawer-body { padding: 24px 28px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 22px; }
+  .drawer-group-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted-soft);
+    margin-bottom: 10px;
+  }
+  .drawer-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .drawer-row:last-child { margin-bottom: 0; }
+  .drawer-lbl { font-size: 13px; font-weight: 500; color: var(--ink); }
+  .drawer-sub { font-size: 12px; color: var(--muted); }
+  .drawer-input {
+    height: 40px;
+    padding: 0 14px;
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 13px;
+    outline: none;
+    transition: all var(--t);
+  }
+  .drawer-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(204,120,92,.15);
+  }
+  .drawer-hint {
+    font-size: 12px; color: var(--muted);
+    background: var(--surface-card);
+    padding: 10px 12px;
+    border-radius: var(--r-md);
+    line-height: 1.5;
+  }
+  .drawer-hint code {
+    font-family: var(--mono);
+    background: var(--canvas);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--primary);
+    font-size: 11.5px;
+  }
+  .drawer-ft {
+    padding: 16px 28px;
+    border-top: 1px solid var(--hairline);
+  }
+
+  /* fade-in */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .anim { animation: fadeUp .28s var(--ease) both; }
+  .hidden { display: none !important; }
+
+  /* layout transitions when expanding */
+  .layout {
+    transition: grid-template-columns .5s var(--ease);
+  }
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(24px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes queryShrink {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(.985); }
+    100% { transform: scale(1); }
+  }
+  .col-side.entering { animation: slideInRight .5s var(--ease) both; }
+  .col-side.entering > * { animation: slideInUp .5s var(--ease) both; }
+  .col-side.entering > *:nth-child(1) { animation-delay: .05s; }
+  .col-side.entering > *:nth-child(2) { animation-delay: .15s; }
+  .col-side.entering > *:nth-child(3) { animation-delay: .25s; }
+  .pipeline.entering { animation: slideInUp .45s var(--ease) both; }
+  .results-card.entering { animation: slideInUp .45s var(--ease) .1s both; }
+  .query-card.shrink { animation: queryShrink .5s var(--ease); }
+
+  /* spinner glyph used inside running node */
+  .glyph-spinner {
+    width: 12px; height: 12px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* btn spinner */
+  .btn-spinner {
+    width: 12px; height: 12px;
+    border: 2px solid rgba(255,255,255,.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .65s linear infinite;
+  }
+
+  /* footer */
+  .site-footer {
+    margin-top: 64px;
+    padding: 28px 32px;
+    border-top: 1px solid var(--hairline);
+    color: var(--muted-soft);
+    font-size: 12px;
+    text-align: center;
+    font-family: var(--sans);
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<header class="topbar">
+  <a href="#" class="brand">
+    <span class="brand-mark">
+      <!-- 4-spoke radial spike-mark -->
+      <svg viewBox="0 0 16 16" fill="none">
+        <path d="M8 0v6.5M8 9.5V16M0 8h6.5M9.5 8H16M2.34 2.34l4.6 4.6M9.06 9.06l4.6 4.6M13.66 2.34l-4.6 4.6M6.94 9.06l-4.6 4.6"
+              stroke="#141413" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="brand-name">Travel Data <span class="accent">Agent</span></span>
+  </a>
+
+  <div class="top-meta">
+    <div class="conn">
+      <div class="conn-dot" id="connDot"></div>
+      <span id="connText">检查中…</span>
+    </div>
+    <button class="top-link" onclick="openSettings()">Settings</button>
+  </div>
+</header>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="eyebrow">旅游数据问答</div>
+  <h1>Ask the data.<br><em>Get the answer.</em></h1>
+</section>
+
+<!-- ═══ LAYOUT ═══ -->
+<div class="layout solo" id="layout">
+
+  <!-- ══ LEFT ══ -->
+  <div class="col-main">
+
+    <!-- Query -->
+    <div class="query-card" id="queryCard">
+      <div class="q-label">Your question</div>
+      <textarea
+        class="q-textarea" id="qInput" rows="2"
+        placeholder="例如：统计华北地区上个月各品类的销售总额，按销售额降序…"></textarea>
+
+      <div class="q-examples">
+        <div class="q-eg-label">Try one of these</div>
+        <div class="q-chips">
+          <span class="chip" onclick="fillQuery(this)">本月酒店订单量是多少</span>
+          <span class="chip" onclick="fillQuery(this)">最近30天机票销售额</span>
+          <span class="chip" onclick="fillQuery(this)">哪种旅游产品最受欢迎</span>
+          <span class="chip" onclick="fillQuery(this)">最近三个月订单变化趋势</span>
+          <span class="chip" onclick="fillQuery(this)">各渠道订单占比</span>
+        </div>
+      </div>
+
+      <div class="q-footer">
+        <div class="q-hint"><kbd>Ctrl</kbd>+<kbd>↵</kbd> 提交</div>
+        <button class="btn-primary" id="runBtn" onclick="submit()">
+          <svg viewBox="0 0 12 12" fill="currentColor">
+            <path d="M2 1.5l8 4.5-8 4.5z"/>
+          </svg>
+          <span>开始分析</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Pipeline -->
+    <div class="pipeline hidden" id="pipelineCard">
+      <div class="pipeline-hd">
+        <div class="pipeline-title">Pipeline</div>
+        <div class="pipeline-status" id="plStatus">等待中</div>
+      </div>
+      <div class="pipeline-progress">
+        <div class="pipeline-progress-bar" id="plBar"></div>
+      </div>
+      <div class="pl-list" id="plSteps"></div>
+    </div>
+
+    <!-- Results -->
+    <div class="results-card hidden" id="resultsCard">
+      <div class="results-hd">
+        <div class="results-title">Result</div>
+        <div class="results-meta" id="resultsMeta">
+          <span><b id="metaRows">0</b> rows</span>
+          <span><b id="metaCols">0</b> cols</span>
+          <span><b id="metaTime">--</b></span>
+        </div>
+      </div>
+      <div class="results-tabs hidden" id="resultsTabs">
+        <button class="results-tab active" data-view="table" onclick="switchView('table')">Table</button>
+        <button class="results-tab" data-view="bar"  onclick="switchView('bar')">Bar</button>
+        <button class="results-tab" data-view="line" onclick="switchView('line')">Line</button>
+        <button class="results-tab" data-view="pie"  onclick="switchView('pie')">Pie</button>
+      </div>
+
+      <div class="results-body">
+        <div id="tblView">
+          <div class="empty-state">
+            <div class="empty-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M3 6h18M3 12h18M3 18h12"/>
+              </svg>
+            </div>
+            <div class="empty-t">等待查询</div>
+            <div class="empty-d">提交问题后，结果将出现在这里</div>
+          </div>
+        </div>
+        <div id="chartView" class="chart-wrap hidden">
+          <div class="chart-canvas-wrap">
+            <canvas id="chartCanvas"></canvas>
+          </div>
+        </div>
+        <div id="errBlock" class="err-block hidden" style="margin-top:14px;">
+          <div class="err-t">执行失败</div>
+          <div class="err-msg" id="errMsg"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /col-main -->
+
+  <!-- ══ RIGHT ══ -->
+  <div class="col-side hidden" id="colSide">
+
+    <!-- SQL (dark product card) -->
+    <div class="sql-card">
+      <div class="sql-card-hd">
+        <span class="sql-card-title">
+          <span class="sql-traffic"><span></span><span></span><span></span></span>
+          generated.sql
+        </span>
+        <button class="sql-copy-btn" id="copyBtn" onclick="copySQL()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Copy
+        </button>
+      </div>
+      <pre class="sql-pre"><code id="sqlCode"><span class="placeholder">-- 等待生成...</span></code></pre>
+    </div>
+
+    <!-- Entities -->
+    <div class="card card-soft">
+      <div class="card-hd"><div class="card-title"><span class="card-title-mark">＊</span>识别实体</div></div>
+      <div class="card-bd">
+        <div class="ent-section">
+          <div class="ent-lbl">Tables</div>
+          <div class="ent-tags" id="entTables"><span class="ent-none">待识别</span></div>
+        </div>
+        <div class="ent-section">
+          <div class="ent-lbl">Metrics</div>
+          <div class="ent-tags" id="entMetrics"><span class="ent-none">待识别</span></div>
+        </div>
+        <div class="ent-section">
+          <div class="ent-lbl">Columns</div>
+          <div class="ent-tags" id="entCols"><span class="ent-none">待识别</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Follow-ups -->
+    <div class="card">
+      <div class="card-hd"><div class="card-title"><span class="card-title-mark">＊</span>推荐追问</div></div>
+      <div class="card-bd" style="padding-top:8px;">
+        <div class="fu-list" id="fuList">
+          <div class="fu-item" onclick="fillFollowup(this)">
+            <svg class="fu-arrow" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg>
+            按省份/城市进一步细分
+          </div>
+          <div class="fu-item" onclick="fillFollowup(this)">
+            <svg class="fu-arrow" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg>
+            与上月同期对比变化
+          </div>
+          <div class="fu-item" onclick="fillFollowup(this)">
+            <svg class="fu-arrow" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg>
+            查看原始订单明细数据
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /col-side -->
+
+</div><!-- /layout -->
+
+<footer class="site-footer">
+  Travel Data Agent · LangGraph + 三路召回 · MySQL · Qdrant · Elasticsearch
+</footer>
+
+<!-- ═══ SETTINGS DRAWER ═══ -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeSettings()"></div>
+<aside class="drawer" id="drawer" aria-label="Settings">
+  <div class="drawer-hd">
+    <span class="drawer-title">Settings</span>
+    <button class="drawer-close" onclick="closeSettings()" aria-label="关闭">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div>
+      <div class="drawer-group-title">请求标识</div>
+      <div class="drawer-row">
+        <label class="drawer-lbl">X-Request-ID
+          <span class="drawer-sub">— 后端 RequestIDMiddleware 用于链路追踪</span>
+        </label>
+        <input class="drawer-input" id="cfgRequestId" placeholder="Mobile_Car"/>
+      </div>
+    </div>
+    <div>
+      <div class="drawer-group-title">接口地址</div>
+      <div class="drawer-row">
+        <label class="drawer-lbl">API Base URL</label>
+        <input class="drawer-input" id="cfgApiBase" placeholder="http://localhost:8000"/>
+        <div class="drawer-hint">
+          POST <code>/api/query</code> · 流式返回 <code>text/event-stream</code>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-ft">
+    <button class="btn-primary" style="width:100%; justify-content:center;" onclick="saveSettings()">保存配置</button>
+  </div>
+</aside>
+
+<script>
+  // ───── CONFIG ─────
+  let API_BASE   = localStorage.getItem('cfg_api_base')   || 'http://localhost:8000';
+  let REQUEST_ID = localStorage.getItem('cfg_request_id') || 'Mobile_Car';
+
+  // ───── PIPELINE DEFINITION ─────
+  // Backend step ids (Chinese, must match writer({"step": ...}))
+  const PIPELINE = [
+    { id: '提取关键字', name: '提取关键字', sub: 'jieba 分词 + LLM 意图识别' },
+    {
+      type: 'parallel',
+      name: '并行召回',
+      sub: 'Qdrant 向量 · ES 关键词',
+      children: [
+        { id: '召回字段',     name: '字段信息' },
+        { id: '召回指标',     name: '指标信息' },
+        { id: '召回字段取值', name: '字段取值' },
+      ]
+    },
+    { id: '合并召回信息', name: '合并召回信息', sub: '去重 · 评分 · 关联表' },
+    {
+      type: 'parallel',
+      name: '并行过滤',
+      sub: 'LLM 二次筛选',
+      children: [
+        { id: '过滤表格', name: '表格筛选' },
+        { id: '过滤指标', name: '指标筛选' },
+      ]
+    },
+    { id: '添加额外上下文信息', name: '添加上下文', sub: '日期 · 枚举 · DB 方言' },
+    { id: '生成SQL',      name: '生成 SQL',  sub: 'LLM' },
+    // Optional intent-specific enhancers
+    { id: '趋势分析增强', name: '趋势分析增强', optional: true },
+    { id: '对比分析增强', name: '对比分析增强', optional: true },
+    { id: '排名分析增强', name: '排名分析增强', optional: true },
+    { id: '验证SQL',      name: '校验 SQL',  sub: 'EXPLAIN' },
+    { id: '校正SQL',      name: '校正 SQL',  optional: true, sub: '错误自动修复' },
+    { id: '执行SQL',      name: '执行 SQL',  sub: '业务库查询' },
+  ];
+
+  const ALL_STEPS = PIPELINE.flatMap(s =>
+    s.type === 'parallel' ? s.children.map(c => c.id) : (s.optional ? [] : [s.id])
+  );
+
+  // ───── STATE ─────
+  let stepStatus  = {}; // step id -> 'p'|'r'|'s'|'e'|'skip'
+  let currentSQL  = '';
+  let startTs     = 0;
+  let timerHandle = null;
+  let chartInst   = null;
+  let lastRows    = [];
+  let currentView = 'table';
+
+  // entities collected by sniffing recall events / generated SQL
+  let entities = { tables: [], metrics: [], cols: [] };
+
+  // ───── INIT ─────
+  (function init() {
+    const ta = document.getElementById('qInput');
+    ta.addEventListener('focus', () => document.getElementById('queryCard').classList.add('focus-in'));
+    ta.addEventListener('blur', () => document.getElementById('queryCard').classList.remove('focus-in'));
+    ta.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); submit(); }
+    });
+    autoGrow(ta);
+    ta.addEventListener('input', () => autoGrow(ta));
+    checkConn();
+  })();
+
+  function autoGrow(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(220, el.scrollHeight) + 'px';
+  }
+
+  function fillQuery(el) {
+    const ta = document.getElementById('qInput');
+    ta.value = el.textContent.trim();
+    autoGrow(ta);
+    ta.focus();
+  }
+  function fillFollowup(el) {
+    const txt = el.innerText.trim();
+    const ta = document.getElementById('qInput');
+    ta.value = txt;
+    autoGrow(ta);
+    ta.focus();
+  }
+
+  // ───── SETTINGS ─────
+  function openSettings() {
+    document.getElementById('cfgApiBase').value   = API_BASE;
+    document.getElementById('cfgRequestId').value = REQUEST_ID;
+    document.getElementById('drawerOverlay').classList.add('open');
+    document.getElementById('drawer').classList.add('open');
+  }
+  function closeSettings() {
+    document.getElementById('drawerOverlay').classList.remove('open');
+    document.getElementById('drawer').classList.remove('open');
+  }
+  function saveSettings() {
+    API_BASE   = document.getElementById('cfgApiBase').value.trim() || API_BASE;
+    REQUEST_ID = document.getElementById('cfgRequestId').value.trim() || REQUEST_ID;
+    localStorage.setItem('cfg_api_base',   API_BASE);
+    localStorage.setItem('cfg_request_id', REQUEST_ID);
+    closeSettings();
+    checkConn();
+  }
+
+  // ───── COPY SQL ─────
+  function copySQL() {
+    if (!currentSQL) return;
+    navigator.clipboard.writeText(currentSQL).then(() => {
+      const btn = document.getElementById('copyBtn');
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<span style="color:#9ce0a8">✓ Copied</span>';
+      setTimeout(() => btn.innerHTML = orig, 1600);
+    });
+  }
+
+  // ───── PIPELINE RENDER ─────
+  function spikeGlyph() {
+    return `<svg class="pl-node-glyph" viewBox="0 0 16 16" fill="none">
+      <path d="M8 1v5M8 10v5M1 8h5M10 8h5M3.05 3.05l3.5 3.5M9.45 9.45l3.5 3.5M12.95 3.05l-3.5 3.5M6.55 9.45l-3.5 3.5"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`;
+  }
+  function checkGlyph() {
+    return `<svg class="pl-node-glyph" viewBox="0 0 16 16" fill="none">
+      <path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+  }
+  function spinnerGlyph() {
+    return `<svg class="pl-node-glyph" viewBox="0 0 16 16" fill="none">
+      <path d="M8 2a6 6 0 016 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>`;
+  }
+  function errGlyph() {
+    return `<svg class="pl-node-glyph" viewBox="0 0 16 16" fill="none">
+      <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>`;
+  }
+  function smallGlyphFor(st) {
+    if (st === 'r') return spinnerGlyph();
+    if (st === 's') return checkGlyph();
+    if (st === 'e') return errGlyph();
+    if (st === 'skip') return spikeGlyph();
+    return spikeGlyph();
+  }
+  function statusLabel(st) {
+    return ({ r: 'running', s: 'done', e: 'error', skip: 'skipped' })[st] || '';
+  }
+
+  function renderPipeline() {
+    const container = document.getElementById('plSteps');
+    container.innerHTML = '';
+
+    // progress
+    const allSteps = ALL_STEPS;
+    const done = allSteps.filter(s => stepStatus[s] === 's').length;
+    const pct  = Math.round((done / allSteps.length) * 100);
+    document.getElementById('plBar').style.width = pct + '%';
+
+    PIPELINE.forEach((step, i) => {
+      // optional steps that have no event yet → hide
+      if (step.optional && !stepStatus[step.id]) return;
+
+      if (step.type === 'parallel') {
+        const wrap = document.createElement('div');
+        wrap.className = 'pl-parallel-wrap';
+        wrap.innerHTML = `
+          <div class="pl-parallel-label">${step.name} · ${step.sub || ''}</div>
+          ${step.children.map(c => {
+            const st = stepStatus[c.id] || 'p';
+            return `<div class="pl-psub ${st}">
+              <div class="pl-pnode">${smallGlyphFor(st)}</div>
+              <div class="pl-pname">${c.name}</div>
+              <div class="pl-meta">${statusLabel(st)}</div>
+            </div>`;
+          }).join('')}
+        `;
+        container.appendChild(wrap);
+      } else {
+        const st = stepStatus[step.id] || 'p';
+        const div = document.createElement('div');
+        div.className = `pl-step ${st}`;
+        div.innerHTML = `
+          <div class="pl-node">${smallGlyphFor(st)}</div>
+          <div class="pl-name">${step.name}${step.sub ? ` <span style="color:var(--muted-soft); font-size:12.5px; font-weight:400;">· ${step.sub}</span>` : ''}</div>
+          <div class="pl-meta">${statusLabel(st)}</div>
+        `;
+        container.appendChild(div);
+      }
+    });
+  }
+
+  // ───── EVENT HANDLER ─────
+  function handleEvent(data) {
+    if (data.type === 'progress') {
+      const stMap = { running: 'r', success: 's', error: 'e', skip: 'skip' };
+      const st = stMap[data.status] || 'p';
+      stepStatus[data.step] = st;
+      renderPipeline();
+      const plSt = document.getElementById('plStatus');
+      plSt.className = 'pipeline-status';
+      if (data.status === 'running') {
+        plSt.textContent = data.step + ' …';
+        plSt.classList.add('running');
+      } else if (data.status === 'error') {
+        plSt.textContent = data.step + ' 失败';
+        plSt.classList.add('err');
+      } else if (data.status === 'success' && data.step === '执行SQL') {
+        plSt.textContent = '分析完成';
+        plSt.classList.add('done');
+      }
+    } else if (data.type === 'result') {
+      if (data.error) {
+        onError(data.error);
+      } else {
+        renderResults(data.data || []);
+      }
+    } else if (data.type === 'error') {
+      onError(data.message || 'Unknown error');
+    }
+
+    // SQL field — backend may emit on any payload
+    if (data.sql) {
+      currentSQL = data.sql;
+      const el = document.getElementById('sqlCode');
+      el.innerHTML = highlightSQL(data.sql);
+      autoExtractEntitiesFromSQL(data.sql);
+    }
+
+    // Entities pushed from backend (graceful: if backend later emits)
+    if (data.entities) {
+      if (data.entities.tables)  setEntities('entTables',  data.entities.tables,  'tag-table');
+      if (data.entities.metrics) setEntities('entMetrics', data.entities.metrics, 'tag-metric');
+      if (data.entities.columns) setEntities('entCols',    data.entities.columns, 'tag-col');
+    }
+  }
+
+  function setEntities(domId, list, klass) {
+    const el = document.getElementById(domId);
+    if (!list || !list.length) {
+      el.innerHTML = '<span class="ent-none">未识别</span>';
+      return;
+    }
+    el.innerHTML = list.map(t =>
+      `<span class="tag ${klass}">${escapeHtml(t)}</span>`
+    ).join('');
+  }
+
+  function autoExtractEntitiesFromSQL(sql) {
+    // best-effort: extract tables (FROM/JOIN) and columns
+    const tables = new Set();
+    const reTbl = /(?:from|join)\s+([a-z_][\w]*)/gi;
+    let m;
+    while ((m = reTbl.exec(sql)) !== null) tables.add(m[1]);
+    if (tables.size) setEntities('entTables', Array.from(tables), 'tag-table');
+
+    // metrics — guess by aggregate names in SELECT
+    const metrics = new Set();
+    const reAgg = /\b(sum|count|avg|max|min)\s*\(\s*([a-z_*][\w*]*)\s*\)/gi;
+    while ((m = reAgg.exec(sql)) !== null) {
+      metrics.add(m[1].toUpperCase() + '(' + m[2] + ')');
+    }
+    if (metrics.size) setEntities('entMetrics', Array.from(metrics), 'tag-metric');
+  }
+
+  // ───── SQL HIGHLIGHT (light) ─────
+  function highlightSQL(sql) {
+    if (!sql) return '<span class="placeholder">-- 等待生成...</span>';
+    const KW = /\b(SELECT|FROM|WHERE|JOIN|LEFT|RIGHT|INNER|OUTER|ON|GROUP\s+BY|ORDER\s+BY|HAVING|LIMIT|AS|AND|OR|NOT|IN|IS|NULL|DISTINCT|UNION|ALL|CASE|WHEN|THEN|ELSE|END|WITH|DESC|ASC|BETWEEN|EXISTS|INTERVAL|DAY|WEEK|MONTH|YEAR|DATE|CAST)\b/gi;
+    const FN = /\b(SUM|COUNT|AVG|MAX|MIN|ROUND|COALESCE|IFNULL|DATE_FORMAT|DATE_SUB|DATE_ADD|NOW|CURDATE|YEAR|MONTH|DAY|EXTRACT|CONCAT|SUBSTRING|LENGTH|LOWER|UPPER)\b/gi;
+    let out = escapeHtml(sql);
+    out = out.replace(/--[^\n]*/g, m => `<span class="com">${m}</span>`);
+    out = out.replace(/'([^']*)'/g, m => `<span class="str">${m}</span>`);
+    out = out.replace(/\b(\d+)\b/g, m => `<span class="num">${m}</span>`);
+    out = out.replace(FN, m => `<span class="fn">${m}</span>`);
+    out = out.replace(KW, m => `<span class="kw">${m}</span>`);
+    return out;
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+  }
+
+  // ───── RESULTS ─────
+  function renderResults(rows) {
+    document.getElementById('resultsCard').classList.remove('hidden');
+    const tblView   = document.getElementById('tblView');
+    const errBlock  = document.getElementById('errBlock');
+    const tabs      = document.getElementById('resultsTabs');
+    errBlock.classList.add('hidden');
+
+    if (!rows || rows.length === 0) {
+      tabs.classList.add('hidden');
+      tblView.innerHTML = `
+        <div class="empty-state anim">
+          <div class="empty-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M3 6h18M3 12h18M3 18h12"/>
+            </svg>
+          </div>
+          <div class="empty-t">查询结果为空</div>
+          <div class="empty-d">没有符合条件的数据，可调整查询条件后重试</div>
+        </div>`;
+      return;
+    }
+
+    lastRows = rows;
+    const cols = Object.keys(rows[0]);
+    document.getElementById('metaRows').textContent = rows.length.toLocaleString();
+    document.getElementById('metaCols').textContent = cols.length;
+    tabs.classList.remove('hidden');
+
+    // 提取并显示 Columns
+    setEntities('entCols', cols, 'tag-col');
+
+    // numeric col detection - 包含 Decimal 类型
+    const numCols = new Set(cols.filter(c => rows.some(r => {
+      const v = r[c];
+      return typeof v === 'number' || (typeof v === 'string' && !isNaN(v) && v.trim() !== '');
+    })));
+
+    // build table
+    const html = [];
+    html.push('<div class="tbl-wrap anim"><table class="data-tbl">');
+    html.push('<thead><tr>');
+    cols.forEach(c => html.push(`<th>${escapeHtml(c)}</th>`));
+    html.push('</tr></thead><tbody>');
+    rows.forEach(row => {
+      html.push('<tr>');
+      cols.forEach(c => {
+        const v = row[c];
+        const isNum = numCols.has(c);
+        const display = (v === null || v === undefined)
+          ? `<span class="td-null">—</span>`
+          : isNum ? Number(v).toLocaleString(undefined, { maximumFractionDigits: 2 })
+                  : escapeHtml(String(v));
+        html.push(`<td class="${isNum ? 'td-num' : ''}">${display}</td>`);
+      });
+      html.push('</tr>');
+    });
+    html.push('</tbody></table></div>');
+    tblView.innerHTML = html.join('');
+
+    if (currentView !== 'table') renderChart(rows, currentView);
+  }
+
+  function switchView(v) {
+    currentView = v;
+    document.querySelectorAll('.results-tab').forEach(t =>
+      t.classList.toggle('active', t.dataset.view === v));
+    if (v === 'table') {
+      document.getElementById('tblView').classList.remove('hidden');
+      document.getElementById('chartView').classList.add('hidden');
+    } else {
+      document.getElementById('tblView').classList.add('hidden');
+      document.getElementById('chartView').classList.remove('hidden');
+      if (lastRows.length) renderChart(lastRows, v);
+    }
+  }
+
+  const PALETTE = ['#cc785c', '#5db8a6', '#e8a55a', '#7a8fb5', '#a17fc4', '#9b6b3f', '#5db872'];
+  function chartOpts(type) {
+    const tickColor = '#6c6a64';
+    const gridColor = 'rgba(20,20,19,.06)';
+    return {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 450, easing: 'easeOutQuart' },
+      plugins: {
+        legend: {
+          labels: { color: '#3d3d3a', font: { family: 'Inter', size: 12 }, boxWidth: 12, padding: 12 }
+        },
+        tooltip: {
+          backgroundColor: '#181715',
+          titleColor: '#faf9f5', bodyColor: '#a09d96',
+          borderColor: 'rgba(250,249,245,.1)', borderWidth: 1, padding: 12,
+          titleFont: { family: 'Inter', size: 13, weight: '500' },
+          bodyFont:  { family: 'JetBrains Mono', size: 12 },
+          cornerRadius: 8
+        }
+      },
+      scales: type === 'pie' ? {} : {
+        x: { ticks: { color: tickColor, font: { family: 'Inter', size: 11 } }, grid: { color: gridColor, drawBorder: false } },
+        y: { ticks: { color: tickColor, font: { family: 'Inter', size: 11 } }, grid: { color: gridColor, drawBorder: false } }
+      }
+    };
+  }
+  function renderChart(rows, type) {
+    if (!rows || !rows.length) return;
+    const cols = Object.keys(rows[0]);
+    // numeric col detection - 包含 Decimal 类型
+    const numCols = cols.filter(c => rows.some(r => {
+      const v = r[c];
+      return typeof v === 'number' || (typeof v === 'string' && !isNaN(v) && v.trim() !== '');
+    }));
+    if (!numCols.length) return;
+    const lblCol = cols.find(c => !numCols.includes(c)) || cols[0];
+    const labels = rows.map(r => String(r[lblCol] ?? ''));
+
+    if (chartInst) { chartInst.destroy(); chartInst = null; }
+    const canvas = document.getElementById('chartCanvas');
+
+    if (type === 'pie') {
+      chartInst = new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+          labels,
+          datasets: [{
+            data: rows.map(r => Number(r[numCols[0]] ?? 0)),
+            backgroundColor: labels.map((_,i) => PALETTE[i % PALETTE.length]),
+            borderColor: '#faf9f5', borderWidth: 2
+          }]
+        },
+        options: chartOpts('pie'),
+      });
+    } else {
+      const datasets = numCols.slice(0, 4).map((c, i) => ({
+        label: c,
+        data: rows.map(r => Number(r[c] ?? 0)),
+        backgroundColor: type === 'line' ? PALETTE[i % PALETTE.length] + '33'
+                                         : PALETTE[i % PALETTE.length],
+        borderColor: PALETTE[i % PALETTE.length],
+        borderWidth: type === 'line' ? 2 : 0,
+        borderRadius: type === 'bar' ? 4 : 0,
+        fill: type === 'line',
+        tension: 0.35,
+        pointRadius: type === 'line' ? 3 : 0,
+      }));
+      chartInst = new Chart(canvas, {
+        type: type === 'line' ? 'line' : 'bar',
+        data: { labels, datasets },
+        options: chartOpts(type),
+      });
+    }
+  }
+
+  // ───── SUBMIT ─────
+  async function submit() {
+    const query = document.getElementById('qInput').value.trim();
+    if (!query) { document.getElementById('qInput').focus(); return; }
+
+    // Reset
+    stepStatus = {};
+    currentSQL = '';
+    lastRows = [];
+    if (chartInst) { chartInst.destroy(); chartInst = null; }
+    currentView = 'table';
+    document.querySelectorAll('.results-tab').forEach(t =>
+      t.classList.toggle('active', t.dataset.view === 'table'));
+    document.getElementById('chartView').classList.add('hidden');
+    document.getElementById('tblView').classList.remove('hidden');
+
+    const wasFirst = document.getElementById('colSide').classList.contains('hidden');
+
+    document.getElementById('pipelineCard').classList.remove('hidden');
+    document.getElementById('resultsCard').classList.remove('hidden');
+    document.getElementById('colSide').classList.remove('hidden');
+    document.getElementById('layout').classList.remove('solo');
+
+    if (wasFirst) {
+      const side = document.getElementById('colSide');
+      const pipe = document.getElementById('pipelineCard');
+      const res  = document.getElementById('resultsCard');
+      const qc   = document.getElementById('queryCard');
+      [side, pipe, res, qc].forEach(el => el.classList.remove('entering','shrink'));
+      // force reflow
+      void side.offsetWidth;
+      side.classList.add('entering');
+      pipe.classList.add('entering');
+      res.classList.add('entering');
+      qc.classList.add('shrink');
+    }
+    document.getElementById('errBlock').classList.add('hidden');
+    document.getElementById('plBar').style.width = '0%';
+    const plSt = document.getElementById('plStatus');
+    plSt.className = 'pipeline-status running';
+    plSt.textContent = '准备中…';
+
+    document.getElementById('metaRows').textContent = '0';
+    document.getElementById('metaCols').textContent = '0';
+    document.getElementById('metaTime').textContent = '0.0s';
+
+    document.getElementById('sqlCode').innerHTML = '<span class="placeholder">-- 生成中...</span>';
+    document.getElementById('entTables').innerHTML  = '<span class="ent-none">识别中…</span>';
+    document.getElementById('entMetrics').innerHTML = '<span class="ent-none">识别中…</span>';
+    document.getElementById('entCols').innerHTML    = '<span class="ent-none">识别中…</span>';
+
+    document.getElementById('tblView').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon"><div class="glyph-spinner" style="color:var(--primary)"></div></div>
+        <div class="empty-t">分析进行中</div>
+        <div class="empty-d">请等待 Pipeline 完成执行</div>
+      </div>`;
+
+    renderPipeline();
+
+    const btn = document.getElementById('runBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="btn-spinner"></div><span>分析中</span>';
+
+    startTs = Date.now();
+    if (timerHandle) clearInterval(timerHandle);
+    timerHandle = setInterval(() => {
+      document.getElementById('metaTime').textContent =
+        ((Date.now() - startTs) / 1000).toFixed(1) + 's';
+    }, 100);
+
+    // 模拟进度步骤
+    const progressSteps = [
+      { step: '提取关键字', delay: 500 },
+      { step: '召回字段', delay: 1000 },
+      { step: '召回指标', delay: 1000 },
+      { step: '召回字段取值', delay: 1000 },
+      { step: '合并召回信息', delay: 500 },
+      { step: '过滤表格', delay: 800 },
+      { step: '过滤指标', delay: 800 },
+      { step: '添加额外上下文信息', delay: 500 },
+      { step: '生成SQL', delay: 1500 },
+      { step: '验证SQL', delay: 500 },
+      { step: '执行SQL', delay: 1000 },
+    ];
+
+    // 模拟进度显示
+    let stepIndex = 0;
+    const progressInterval = setInterval(() => {
+      if (stepIndex < progressSteps.length) {
+        const currentStep = progressSteps[stepIndex];
+        handleEvent({ type: 'progress', step: currentStep.step, status: 'running' });
+        setTimeout(() => {
+          handleEvent({ type: 'progress', step: currentStep.step, status: 'success' });
+        }, currentStep.delay / 2);
+        stepIndex++;
+      } else {
+        clearInterval(progressInterval);
+      }
+    }, 800);
+
+    try {
+      const resp = await fetch(`${API_BASE}/api/query/json`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Request-ID': REQUEST_ID },
+        body: JSON.stringify({ query }),
+      });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
+
+      const data = await resp.json();
+      
+      // 清除进度模拟
+      clearInterval(progressInterval);
+      
+      // 处理结果
+      if (data.error) {
+        onError(data.error);
+      } else {
+        // 标记所有步骤完成
+        progressSteps.forEach(s => {
+          handleEvent({ type: 'progress', step: s.step, status: 'success' });
+        });
+        
+        // 处理SQL
+        if (data.sql) {
+          currentSQL = data.sql;
+          const el = document.getElementById('sqlCode');
+          el.innerHTML = highlightSQL(data.sql);
+          autoExtractEntitiesFromSQL(data.sql);
+        }
+        
+        // 处理识别的表和指标
+        if (data.tables && data.tables.length > 0) {
+          setEntities('entTables', data.tables, 'tag-table');
+        }
+        if (data.metrics && data.metrics.length > 0) {
+          setEntities('entMetrics', data.metrics, 'tag-metric');
+        }
+        
+        // 处理数据
+        if (data.data && data.data.length > 0) {
+          renderResults(data.data);
+          
+          // 提取并显示 Columns
+          const cols = Object.keys(data.data[0]);
+          setEntities('entCols', cols, 'tag-col');
+        } else {
+          renderResults([]);
+        }
+      }
+      
+      onDone();
+    } catch (err) {
+      clearInterval(progressInterval);
+      console.error(err);
+      onError(err.message || String(err));
+    }
+  }
+
+  function onDone() {
+    clearInterval(timerHandle);
+    const btn = document.getElementById('runBtn');
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.5l8 4.5-8 4.5z"/></svg><span>重新分析</span>';
+    document.getElementById('plBar').style.width = '100%';
+
+    // contextual follow-ups
+    const fus = [
+      '按地区/渠道进一步拆分',
+      '与上一周期对比变化',
+      '按时间维度展开（周/月）',
+      '查看相关明细数据',
+    ];
+    document.getElementById('fuList').innerHTML = fus.map(s => `
+      <div class="fu-item anim" onclick="fillFollowup(this)">
+        <svg class="fu-arrow" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11L11 3M5 3h6v6"/></svg>
+        ${escapeHtml(s)}
+      </div>`).join('');
+  }
+
+  function onError(msg) {
+    clearInterval(timerHandle);
+    const btn = document.getElementById('runBtn');
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.5l8 4.5-8 4.5z"/></svg><span>重新分析</span>';
+    document.getElementById('errBlock').classList.remove('hidden');
+    document.getElementById('errMsg').textContent = msg;
+    document.getElementById('tblView').innerHTML = '';
+    const plSt = document.getElementById('plStatus');
+    plSt.className = 'pipeline-status err';
+    plSt.textContent = '执行出错';
+  }
+
+  // ───── CONNECTIVITY ─────
+  async function checkConn() {
+    const dot = document.getElementById('connDot');
+    const txt = document.getElementById('connText');
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 2500);
+      await fetch(`${API_BASE}/docs`, { signal: ctrl.signal, mode: 'no-cors' });
+      clearTimeout(t);
+      dot.classList.remove('off');
+      txt.textContent = '服务已连接';
+    } catch {
+      dot.classList.add('off');
+      txt.textContent = '服务未启动';
+    }
+  }
+</script>
+</body>
+</html>

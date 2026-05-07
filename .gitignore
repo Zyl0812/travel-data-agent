@@ -15,5 +15,13 @@ build/
 .DS_Store
 logs/
 *.log
-conf/
+
+# 配置文件（保留示例）
+conf/app_config.yaml
+conf/meta_config.yaml
 pyrightconfig.json
+
+# 数据目录
+qdrant-data/
+es-data/
+mysql-data/

@@ -6,13 +6,27 @@ from langgraph.runtime import Runtime
 from app.agent.context import DataAgentContext
 from app.agent.llm import llm
 from app.agent.state import DataAgentState
+from app.agent.nodes.utils import log_node_execution
+from app.agent.nodes.generate_sql import clean_sql_output
 from app.core.log import logger
 from app.prompt.prompt_loader import load_prompt
 
+MAX_SQL_CORRECTION_COUNT = 3  # 最大SQL校正次数
 
+
+@log_node_execution("correct_sql")
 async def correct_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]):
     writer = runtime.stream_writer
     writer({"type": "progress", "step": "校正SQL", "status": "running"})
+    
+    trace_id = state.get("trace_id", "unknown")
+    
+    # 检查校正次数
+    correction_count = state.get("sql_correction_count", 0)
+    if correction_count >= MAX_SQL_CORRECTION_COUNT:
+        writer({"type": "progress", "step": "校正SQL", "status": "skip"})
+        logger.warning(f"[{trace_id}] SQL校正次数已达上限({MAX_SQL_CORRECTION_COUNT}次)，跳过校正")
+        return {"sql": state.get("sql", ""), "error": f"SQL校正失败，已达最大重试次数: {state.get('error', '')}"}
     
     # 1. 获取已经写入到状态中的表格、指标、上下文信息、用户问题
     table_infos = state.get("table_infos", [])
@@ -42,7 +56,7 @@ async def correct_sql(state: DataAgentState, runtime: Runtime[DataAgentContext])
 
         chain = prompt | llm | output_parser
 
-        corrected_sql = await chain.ainvoke(
+        raw_sql = await chain.ainvoke(
             {
                 "query": query,
                 "table_infos": yaml.dump(
@@ -58,11 +72,15 @@ async def correct_sql(state: DataAgentState, runtime: Runtime[DataAgentContext])
             }
         )
 
+        # 清理 SQL 输出
+        corrected_sql = clean_sql_output(raw_sql)
+
         writer({"type": "progress", "step": "校正SQL", "status": "success"})
-        logger.info(f"校正SQL成功: {corrected_sql}")
-        return {"sql": corrected_sql}
+        logger.info(f"[{trace_id}] 校正SQL成功: {corrected_sql}")
+        return {"sql": corrected_sql, "sql_correction_count": correction_count + 1}
 
     except Exception as e:
         writer({"type": "progress", "step": "校正SQL", "status": "error"})
-        logger.error(f"校正SQL失败: {str(e)}")
-        raise e
+        logger.error(f"[{trace_id}] 校正SQL失败: {str(e)}")
+        # 返回原始SQL和错误信息，不抛出异常
+        return {"sql": sql, "error": f"SQL校正失败: {str(e)}", "sql_correction_count": correction_count + 1}

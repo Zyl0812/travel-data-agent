@@ -4,6 +4,9 @@ from app.agent.nodes.correct_sql import correct_sql
 from app.agent.nodes.execute_sql import execute_sql
 from app.agent.nodes.generate_sql import generate_sql
 from app.agent.nodes.validate_sql import validate_sql
+from app.agent.nodes.trend import enhance_trend_sql
+from app.agent.nodes.compare import enhance_compare_sql
+from app.agent.nodes.ranking import enhance_ranking_sql
 from langgraph.constants import END, START
 from langgraph.graph import StateGraph
 
@@ -42,6 +45,9 @@ graph_builder.add_node("filter_metric", filter_metric)
 graph_builder.add_node("filter_table", filter_table)
 graph_builder.add_node("add_extra_context", add_extra_context)
 graph_builder.add_node("generate_sql", generate_sql)
+graph_builder.add_node("enhance_trend_sql", enhance_trend_sql)
+graph_builder.add_node("enhance_compare_sql", enhance_compare_sql)
+graph_builder.add_node("enhance_ranking_sql", enhance_ranking_sql)
 graph_builder.add_node("validate_sql", validate_sql)
 graph_builder.add_node("correct_sql", correct_sql)
 graph_builder.add_node("execute_sql", execute_sql)
@@ -59,15 +65,59 @@ graph_builder.add_edge("merge_retrieved_info", "filter_metric")
 graph_builder.add_edge("filter_table", "add_extra_context")
 graph_builder.add_edge("filter_metric", "add_extra_context")
 graph_builder.add_edge("add_extra_context", "generate_sql")
-graph_builder.add_edge("generate_sql", "validate_sql")
+
+# 根据意图选择不同的SQL增强节点
+def route_by_intent(state: DataAgentState) -> str:
+    """根据意图路由到不同的SQL增强节点"""
+    intent = state.get("intent", "simple")
+    if intent == "trend":
+        return "enhance_trend_sql"
+    elif intent == "compare":
+        return "enhance_compare_sql"
+    elif intent == "ranking":
+        return "enhance_ranking_sql"
+    else:
+        return "validate_sql"  # simple 直接跳到验证
+
+graph_builder.add_conditional_edges(
+    "generate_sql",
+    route_by_intent,
+    {
+        "enhance_trend_sql": "enhance_trend_sql",
+        "enhance_compare_sql": "enhance_compare_sql",
+        "enhance_ranking_sql": "enhance_ranking_sql",
+        "validate_sql": "validate_sql",
+    },
+)
+
+# 所有增强节点都连接到验证
+graph_builder.add_edge("enhance_trend_sql", "validate_sql")
+graph_builder.add_edge("enhance_compare_sql", "validate_sql")
+graph_builder.add_edge("enhance_ranking_sql", "validate_sql")
+
+def route_after_validation(state: DataAgentState) -> str:
+    """验证后路由：决定是执行SQL还是校正SQL"""
+    error = state.get("error")
+    correction_count = state.get("sql_correction_count", 0)
+    
+    # 没有错误，直接执行
+    if error is None or error == "":
+        return "execute_sql"
+    
+    # 校正次数超过限制，直接执行（会返回错误）
+    if correction_count >= 3:
+        return "execute_sql"
+    
+    # 有错误且未超过校正次数，进行校正
+    return "correct_sql"
 
 graph_builder.add_conditional_edges(
     "validate_sql",
-    lambda state: "execute_sql" if state["error"] is None else "correct_sql",
+    route_after_validation,
     {"execute_sql": "execute_sql", "correct_sql": "correct_sql"},
 )
 
-graph_builder.add_edge("correct_sql", "execute_sql")
+graph_builder.add_edge("correct_sql", "validate_sql")  # 校正后重新验证
 graph_builder.add_edge("execute_sql", END)
 
 graph = graph_builder.compile()

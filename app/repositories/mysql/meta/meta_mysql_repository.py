@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import text, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.entities.column_info import ColumnInfo
@@ -21,6 +21,13 @@ class MetaMySQLRepository:
 
     def begin(self):
         return self.session.begin()
+
+    async def truncate_all(self):
+        """清空所有 meta 表数据（按外键依赖顺序）"""
+        tables = ["column_metric", "column_info", "metric_info", "table_info"]
+        for table in tables:
+            await self.session.execute(text(f"TRUNCATE TABLE `{table}`"))
+        await self.session.commit()
 
     async def save_table_infos(self, table_infos: list[TableInfo]):
         # 1. 将业务对象转为ORM模型对象
@@ -75,3 +82,35 @@ class MetaMySQLRepository:
             raise ValueError(f"TableInfo with id {table_id} not found")
 
         return TableInfoMapper.to_entity(table_info_mysql)
+
+    async def get_enum_columns(self) -> list[ColumnInfo]:
+        """获取所有包含枚举值的字段（examples不为空的dimension类型字段）"""
+        stmt = select(ColumnInfoMySQL).where(
+            ColumnInfoMySQL.role == 'dimension',
+            ColumnInfoMySQL.examples.isnot(None)
+        )
+        result = await self.session.scalars(stmt)
+        return [ColumnInfoMapper.to_entity(col) for col in result.all()]
+
+    async def get_all_tables_with_columns(self) -> dict[str, list[str]]:
+        """获取所有表及其字段名列表，用于注入到SQL生成prompt"""
+        # 获取所有表
+        tables_stmt = select(TableInfoMySQL)
+        tables_result = await self.session.scalars(tables_stmt)
+        tables = tables_result.all()
+        
+        # 获取所有字段
+        columns_stmt = select(ColumnInfoMySQL)
+        columns_result = await self.session.scalars(columns_stmt)
+        columns = columns_result.all()
+        
+        # 按表分组
+        table_columns: dict[str, list[str]] = {}
+        for table in tables:
+            table_columns[table.id] = []
+        
+        for col in columns:
+            if col.table_id in table_columns:
+                table_columns[col.table_id].append(col.name)
+        
+        return table_columns

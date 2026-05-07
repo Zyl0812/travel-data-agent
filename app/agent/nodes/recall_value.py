@@ -6,14 +6,17 @@ from app.core.log import logger
 from app.agent.context import DataAgentContext
 from app.agent.state import DataAgentState
 from app.agent.llm import llm
+from app.agent.nodes.utils import log_node_execution
 from app.entities.value_info import ValueInfo
 from app.prompt.prompt_loader import load_prompt
 
 
+@log_node_execution("recall_value")
 async def recall_value(state: DataAgentState, runtime: Runtime[DataAgentContext]):
     writer = runtime.stream_writer
     writer({"type": "progress", "step": "召回字段取值", "status": "running"})
     
+    trace_id = state.get("trace_id", "unknown")
     query = state['query']
     keywords = state['keywords']
     
@@ -27,7 +30,11 @@ async def recall_value(state: DataAgentState, runtime: Runtime[DataAgentContext]
         
         chain = prompt | llm | JsonOutputParser()
         
-        result = await chain.ainvoke({'query': query})
+        try:
+            result = await chain.ainvoke({'query': query})
+        except Exception as e:
+            logger.warning(f"[{trace_id}] 扩展关键词失败，使用原始关键词: {str(e)}")
+            result = []
     
         # 2. 关键词列表 已抽取的关键词＋扩充后的
         keywords = list(set(keywords + result))
@@ -35,16 +42,21 @@ async def recall_value(state: DataAgentState, runtime: Runtime[DataAgentContext]
         # 3. 遍历关键词列表，采用全文查询ES获取值信息
         retrieved_value_map:dict[str, ValueInfo] = {}
         for keyword in keywords:
-            value_infos = await value_es_repository.search(keyword)
-            for value_info in value_infos:
-                if value_info.id not in retrieved_value_map:
-                    retrieved_value_map[value_info.id] = value_info
+            try:
+                value_infos = await value_es_repository.search(keyword)
+                for value_info in value_infos:
+                    if value_info.id not in retrieved_value_map:
+                        retrieved_value_map[value_info.id] = value_info
+            except Exception as e:
+                logger.warning(f"[{trace_id}] 关键词 '{keyword}' ES查询失败: {str(e)}")
+                continue
     
         writer({"type": "progress", "step": "召回字段取值", "status": "success"})
-        logger.info(f"召回字段取值成功：{list(retrieved_value_map.keys())}")
+        logger.info(f"[{trace_id}] 召回字段取值成功：{list(retrieved_value_map.keys())}")
         # 4. 更新state
         return {'retrieved_value_map': retrieved_value_map}
     except Exception as e:
-        logger.error(f"召回字段取值失败: {str(e)}")
+        logger.error(f"[{trace_id}] 召回字段取值失败: {str(e)}")
         writer({"type": "progress", "step": "召回字段取值", "status": "error"})
-        raise
+        # 返回空字典，不阻断流程
+        return {'retrieved_value_map': {}}

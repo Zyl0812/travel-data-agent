@@ -1,9 +1,8 @@
-import asyncio
-
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from typing import Optional
 
 from app.conf.app_config import app_config
+from app.core.log import logger
 
 
 class EmbeddingClientManager:
@@ -13,7 +12,26 @@ class EmbeddingClientManager:
 
     def init(self):
         model_name = app_config.embedding.model_path
-        self.client = HuggingFaceEmbeddings(model_name=model_name)
+        device = self._pick_device()
+        logger.info(f"Embedding 模型: {model_name} | device={device}")
+        self.client = HuggingFaceEmbeddings(
+            model_name=model_name,
+            model_kwargs={"device": device},
+            encode_kwargs={"batch_size": 64, "normalize_embeddings": True},
+        )
+
+    @staticmethod
+    def _pick_device() -> str:
+        """优先 cuda → mps → cpu。需要 PyTorch 是 CUDA 版本才能用 GPU。"""
+        try:
+            import torch
+        except ImportError:
+            return "cpu"
+        if torch.cuda.is_available():
+            return "cuda"
+        if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            return "mps"
+        return "cpu"
         
         
 embedding_client_manager = EmbeddingClientManager()

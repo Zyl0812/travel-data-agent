@@ -38,6 +38,10 @@ class MetaKnowledgeService:
         self.metric_qdrant_repository = metric_qdrant_repository
 
     async def build(self, meta_config_path: Path):
+        # 0. 清空 meta 库中的旧数据（支持重复运行）
+        await self.meta_mysql_repository.truncate_all()
+        logger.info("已清空 meta 库旧数据")
+
         # 1. 读取传入元数据配置文件，用于获取需要同步的信息
         # 1.1 加载文件内容
         context = OmegaConf.load(meta_config_path)

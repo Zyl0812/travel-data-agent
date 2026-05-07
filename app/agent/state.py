@@ -44,7 +44,9 @@ class _DataAgentStateRequired(TypedDict):
 
 
 class DataAgentState(_DataAgentStateRequired, total=False):
+    trace_id: str  # 追踪ID，贯穿所有节点
     keywords: list[str]  # 用户查询的关键字
+    intent: str  # 用户意图: simple, ranking, trend, compare
 
     retrieved_columns: list[ColumnInfo]  # 召回的字段信息
     retrieved_values: list[ValueInfo]  # 召回的值信息
@@ -55,7 +57,10 @@ class DataAgentState(_DataAgentStateRequired, total=False):
 
     date_info: DateInfoState  # 日期信息
     db_info: DBInfoState  # 数据库信息
+    enum_values: dict[str, list[str]]  # 枚举值字典
+    table_columns: dict[str, list[str]]  # 表字段字典
 
     sql: str  # 生成的SQL
+    sql_correction_count: int  # SQL校正次数
 
     error: str  # 验证SQL时的错误信息

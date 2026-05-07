@@ -7,6 +7,9 @@ from app.clients.es_client_manager import es_client_manager
 from app.clients.mysql_client_manager import dw_mysql_client_manager, meta_mysql_client_manager
 from app.clients.qdrant_client_manager import qdrant_client_manager
 from app.clients.embedding_client_manager import embedding_client_manager
+from app.models.base import Base
+# 显式 import 所有 model，触发 Base.metadata 注册
+from app.models import column_info_mysql, column_metric_mysql, metric_info_mysql, table_info_mysql  # noqa: F401
 from app.services.meta_knowledge_service import MetaKnowledgeService
 from app.repositories.mysql.dw.dw_mysql_repository import DWMySQLRepository
 from app.repositories.mysql.meta.meta_mysql_repository import MetaMySQLRepository
@@ -21,6 +24,11 @@ async def build(meta_config_path: Path):
     qdrant_client_manager.init()
     embedding_client_manager.init()
     es_client_manager.init()
+
+    # 1.1 自动建 meta 库表（首次运行；已存在则跳过）
+    assert meta_mysql_client_manager.engine is not None
+    async with meta_mysql_client_manager.engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     
     # 2. 创建业务层对象，调用元数据库业务层对象完成元数据库的构建
     assert dw_mysql_client_manager.session_factory is not None

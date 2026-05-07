@@ -1,0 +1,2654 @@
+tables:
+- name: areas
+  role: dimension
+  description: 地区表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: area_code
+    role: dimension
+    description: area_code
+    alias: []
+    sync: true
+  - name: area_name
+    role: dimension
+    description: area_name
+    alias: []
+    sync: false
+  - name: area_full_name
+    role: dimension
+    description: area_full_name
+    alias: []
+    sync: false
+  - name: parent_id
+    role: id
+    description: parent_id
+    alias: []
+    sync: false
+  - name: level
+    role: metric
+    description: 地区层级枚举：1=省级/直辖市级，2=地市级，3=区县级
+    alias: []
+    sync: true
+  - name: postal_code
+    role: dimension
+    description: postal_code
+    alias: []
+    sync: true
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: currencies
+  role: dimension
+  description: 币种表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: currency_code
+    role: dimension
+    description: currency_code
+    alias: []
+    sync: true
+  - name: currency_name
+    role: dimension
+    description: currency_name
+    alias: []
+    sync: false
+  - name: symbol
+    role: attribute
+    description: symbol
+    alias: []
+    sync: false
+  - name: precision_scale
+    role: metric
+    description: precision_scale
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: channels
+  role: dimension
+  description: 渠道表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: channel_code
+    role: dimension
+    description: channel_code
+    alias: []
+    sync: true
+  - name: channel_name
+    role: dimension
+    description: channel_name
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: transport_hubs
+  role: dimension
+  description: 交通枢纽表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: hub_code
+    role: dimension
+    description: hub_code
+    alias: []
+    sync: true
+  - name: hub_name
+    role: dimension
+    description: hub_name
+    alias: []
+    sync: false
+  - name: hub_type_code
+    role: dimension
+    description: 枢纽类型枚举：airport=机场，railway_station=火车站，bus_station=汽车站
+    alias: []
+    sync: true
+  - name: city_area_id
+    role: id
+    description: city_area_id
+    alias: []
+    sync: false
+  - name: address
+    role: attribute
+    description: address
+    alias: []
+    sync: false
+  - name: latitude
+    role: metric
+    description: latitude
+    alias: []
+    sync: false
+  - name: longitude
+    role: metric
+    description: longitude
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: suppliers
+  role: dimension
+  description: 供应商表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: supplier_code
+    role: dimension
+    description: supplier_code
+    alias: []
+    sync: true
+  - name: supplier_name
+    role: dimension
+    description: supplier_name
+    alias: []
+    sync: false
+  - name: supplier_type_code
+    role: dimension
+    description: 供应商类型枚举：hotel=酒店，scenic=景点，flight=机票，train=火车票，bus=汽车票，transfer=接送
+    alias: []
+    sync: true
+  - name: area_id
+    role: id
+    description: area_id
+    alias: []
+    sync: false
+  - name: contact_name
+    role: dimension
+    description: contact_name
+    alias: []
+    sync: false
+  - name: contact_phone
+    role: attribute
+    description: contact_phone
+    alias: []
+    sync: false
+  - name: contact_email
+    role: attribute
+    description: contact_email
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: users
+  role: dimension
+  description: 用户表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: nickname
+    role: attribute
+    description: nickname
+    alias: []
+    sync: false
+  - name: avatar_url
+    role: attribute
+    description: avatar_url
+    alias: []
+    sync: false
+  - name: phone
+    role: attribute
+    description: phone
+    alias: []
+    sync: false
+  - name: email
+    role: attribute
+    description: email
+    alias: []
+    sync: false
+  - name: gender_code
+    role: dimension
+    description: 性别枚举：male=男，female=女，unknown=未知
+    alias: []
+    sync: true
+  - name: birth_date
+    role: time
+    description: birth_date
+    alias: []
+    sync: false
+  - name: register_area_id
+    role: id
+    description: register_area_id
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 用户状态枚举：normal=正常，vip=VIP用户，inactive=已停用
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: user_profiles
+  role: dimension
+  description: 用户资料表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: user_id
+    role: id
+    description: user_id
+    alias: []
+    sync: false
+  - name: real_name
+    role: dimension
+    description: real_name
+    alias: []
+    sync: false
+  - name: identity_no
+    role: attribute
+    description: identity_no
+    alias: []
+    sync: false
+  - name: identity_type_code
+    role: dimension
+    description: 证件类型枚举：id_card=居民身份证，passport=护照
+    alias: []
+    sync: true
+  - name: residence_city_name
+    role: dimension
+    description: residence_city_name
+    alias: []
+    sync: false
+  - name: occupation
+    role: attribute
+    description: occupation
+    alias: []
+    sync: false
+  - name: preference_payload
+    role: attribute
+    description: preference_payload
+    alias: []
+    sync: false
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: travelers
+  role: dimension
+  description: 常用出行人
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: user_id
+    role: id
+    description: user_id
+    alias: []
+    sync: false
+  - name: traveler_name
+    role: dimension
+    description: traveler_name
+    alias: []
+    sync: false
+  - name: identity_no
+    role: attribute
+    description: identity_no
+    alias: []
+    sync: false
+  - name: identity_type_code
+    role: dimension
+    description: 证件类型枚举：id_card=居民身份证，passport=护照
+    alias: []
+    sync: true
+  - name: gender_code
+    role: dimension
+    description: 性别枚举：male=男，female=女
+    alias: []
+    sync: true
+  - name: birth_date
+    role: time
+    description: birth_date
+    alias: []
+    sync: false
+  - name: phone
+    role: attribute
+    description: phone
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: member_accounts
+  role: dimension
+  description: 会员账户
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: user_id
+    role: id
+    description: user_id
+    alias: []
+    sync: false
+  - name: member_level_code
+    role: dimension
+    description: 会员等级枚举：normal=普通会员，silver=银卡会员，gold=金卡会员
+    alias: []
+    sync: true
+  - name: points_balance
+    role: metric
+    description: points_balance
+    alias: []
+    sync: false
+  - name: total_points
+    role: metric
+    description: total_points
+    alias: []
+    sync: false
+  - name: growth_value
+    role: metric
+    description: growth_value
+    alias: []
+    sync: false
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: member_point_ledger
+  role: fact
+  description: 积分流水
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: user_id
+    role: id
+    description: user_id
+    alias: []
+    sync: false
+  - name: ledger_type_code
+    role: dimension
+    description: 积分流水类型枚举：signup_bonus=注册奖励，order_earn=订单获积分，order_earn_revoke=退款撤销获积分，point_redeem=积分抵扣，expire=过期，admin_adjust=人工调整
+    alias: []
+    sync: true
+  - name: points_delta
+    role: metric
+    description: points_delta
+    alias: []
+    sync: false
+  - name: balance_after
+    role: metric
+    description: balance_after
+    alias: []
+    sync: false
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+- name: hotels
+  role: dimension
+  description: 酒店表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: hotel_code
+    role: dimension
+    description: hotel_code
+    alias: []
+    sync: true
+  - name: hotel_name
+    role: dimension
+    description: hotel_name
+    alias: []
+    sync: false
+  - name: hotel_type_code
+    role: dimension
+    description: 酒店类型枚举：luxury=豪华型，business=商务型，resort=度假型，boutique=精品型
+    alias: []
+    sync: true
+  - name: star_rating_code
+    role: dimension
+    description: 星级枚举：3=三星，4=四星，5=五星
+    alias: []
+    sync: true
+  - name: area_id
+    role: id
+    description: area_id
+    alias: []
+    sync: false
+  - name: address
+    role: attribute
+    description: address
+    alias: []
+    sync: false
+  - name: latitude
+    role: metric
+    description: latitude
+    alias: []
+    sync: false
+  - name: longitude
+    role: metric
+    description: longitude
+    alias: []
+    sync: false
+  - name: summary
+    role: attribute
+    description: summary
+    alias: []
+    sync: false
+  - name: facility_payload
+    role: attribute
+    description: facility_payload
+    alias: []
+    sync: false
+  - name: check_in_time
+    role: time
+    description: check_in_time
+    alias: []
+    sync: false
+  - name: check_out_time
+    role: time
+    description: check_out_time
+    alias: []
+    sync: false
+  - name: contact_phone
+    role: attribute
+    description: contact_phone
+    alias: []
+    sync: false
+  - name: supplier_id
+    role: id
+    description: supplier_id
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: hotel_room_types
+  role: dimension
+  description: 酒店房型表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: hotel_id
+    role: id
+    description: hotel_id
+    alias: []
+    sync: false
+  - name: room_type_code
+    role: dimension
+    description: room_type_code
+    alias: []
+    sync: true
+  - name: room_type_name
+    role: dimension
+    description: room_type_name
+    alias: []
+    sync: false
+  - name: room_type_category_code
+    role: dimension
+    description: 房型分类枚举：double=大床房，twin=双床房，suite=套房，family=家庭房
+    alias: []
+    sync: true
+  - name: area_size
+    role: metric
+    description: area_size
+    alias: []
+    sync: false
+  - name: max_guests
+    role: metric
+    description: max_guests
+    alias: []
+    sync: false
+  - name: amenity_payload
+    role: attribute
+    description: amenity_payload
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: hotel_booking_rules
+  role: dimension
+  description: 酒店预订规则
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: hotel_id
+    role: id
+    description: hotel_id
+    alias: []
+    sync: false
+  - name: hold_until_time
+    role: time
+    description: hold_until_time
+    alias: []
+    sync: false
+  - name: min_stay_nights
+    role: metric
+    description: min_stay_nights
+    alias: []
+    sync: false
+  - name: max_room_count
+    role: metric
+    description: max_room_count
+    alias: []
+    sync: false
+  - name: rule_payload
+    role: attribute
+    description: rule_payload
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: hotel_room_daily
+  role: fact
+  description: 酒店房态房价日历
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: room_type_id
+    role: id
+    description: room_type_id
+    alias: []
+    sync: false
+  - name: business_date
+    role: time
+    description: business_date
+    alias: []
+    sync: false
+  - name: total_inventory
+    role: metric
+    description: total_inventory
+    alias: []
+    sync: false
+  - name: available_inventory
+    role: metric
+    description: available_inventory
+    alias: []
+    sync: false
+  - name: reserved_inventory
+    role: metric
+    description: reserved_inventory
+    alias: []
+    sync: false
+  - name: sold_inventory
+    role: metric
+    description: sold_inventory
+    alias: []
+    sync: false
+  - name: currency_code
+    role: dimension
+    description: currency_code
+    alias: []
+    sync: true
+  - name: sale_price_amount
+    role: metric
+    description: sale_price_amount
+    alias: []
+    sync: false
+  - name: settlement_price_amount
+    role: metric
+    description: settlement_price_amount
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: scenic_spots
+  role: dimension
+  description: 景点表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: scenic_code
+    role: dimension
+    description: scenic_code
+    alias: []
+    sync: true
+  - name: scenic_name
+    role: dimension
+    description: scenic_name
+    alias: []
+    sync: false
+  - name: scenic_type_code
+    role: dimension
+    description: 景点类型枚举：theme_park=主题公园，museum=博物馆，mountain=山地景区，heritage=文化遗产，wetland=湿地公园，beach=海滨景区，snow=冰雪景区，forest=森林公园，waterfall=瀑布溪流，cultural_square=文化广场，ancient_town=古镇古街，religious=宗教场所，theme_water=水上乐园，zoo=动物园，botanical_garden=植物园，industrial_tourism=工业旅游，red_tourism=红色旅游，ecological=生态景区
+    alias: []
+    sync: true
+  - name: rating_code
+    role: dimension
+    description: 景区等级枚举：5A=5A级，4A=4A级，3A=3A级
+    alias: []
+    sync: true
+  - name: area_id
+    role: id
+    description: area_id
+    alias: []
+    sync: false
+  - name: address
+    role: attribute
+    description: address
+    alias: []
+    sync: false
+  - name: latitude
+    role: metric
+    description: latitude
+    alias: []
+    sync: false
+  - name: longitude
+    role: metric
+    description: longitude
+    alias: []
+    sync: false
+  - name: summary
+    role: attribute
+    description: summary
+    alias: []
+    sync: false
+  - name: tag_payload
+    role: attribute
+    description: tag_payload
+    alias: []
+    sync: false
+  - name: open_time
+    role: time
+    description: open_time
+    alias: []
+    sync: false
+  - name: close_time
+    role: time
+    description: close_time
+    alias: []
+    sync: false
+  - name: supplier_id
+    role: id
+    description: supplier_id
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: scenic_ticket_types
+  role: dimension
+  description: 景点票种表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: scenic_spot_id
+    role: id
+    description: scenic_spot_id
+    alias: []
+    sync: false
+  - name: ticket_type_code
+    role: dimension
+    description: ticket_type_code
+    alias: []
+    sync: true
+  - name: ticket_type_name
+    role: dimension
+    description: ticket_type_name
+    alias: []
+    sync: false
+  - name: ticket_category_code
+    role: dimension
+    description: 票种分类枚举：adult=成人票，student=学生票，family=家庭票，night=夜场票
+    alias: []
+    sync: true
+  - name: benefit_payload
+    role: attribute
+    description: benefit_payload
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: scenic_booking_rules
+  role: dimension
+  description: 景点预订规则
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: scenic_spot_id
+    role: id
+    description: scenic_spot_id
+    alias: []
+    sync: false
+  - name: latest_booking_time
+    role: time
+    description: latest_booking_time
+    alias: []
+    sync: false
+  - name: rule_payload
+    role: attribute
+    description: rule_payload
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: scenic_ticket_daily
+  role: fact
+  description: 景点票日历
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: ticket_type_id
+    role: id
+    description: ticket_type_id
+    alias: []
+    sync: false
+  - name: business_date
+    role: time
+    description: business_date
+    alias: []
+    sync: false
+  - name: total_inventory
+    role: metric
+    description: total_inventory
+    alias: []
+    sync: false
+  - name: available_inventory
+    role: metric
+    description: available_inventory
+    alias: []
+    sync: false
+  - name: reserved_inventory
+    role: metric
+    description: reserved_inventory
+    alias: []
+    sync: false
+  - name: sold_inventory
+    role: metric
+    description: sold_inventory
+    alias: []
+    sync: false
+  - name: currency_code
+    role: dimension
+    description: currency_code
+    alias: []
+    sync: true
+  - name: sale_price_amount
+    role: metric
+    description: sale_price_amount
+    alias: []
+    sync: false
+  - name: settlement_price_amount
+    role: metric
+    description: settlement_price_amount
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: flight_routes
+  role: dimension
+  description: 航线表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: route_code
+    role: dimension
+    description: route_code
+    alias: []
+    sync: true
+  - name: flight_no
+    role: attribute
+    description: flight_no
+    alias: []
+    sync: false
+  - name: airline_code
+    role: dimension
+    description: 航司枚举：MU=东方航空，CA=中国国航，CZ=南方航空，HU=海南航空，HO=吉祥航空，3U=四川航空，FM=上海航空，9C=春秋航空，BK=奥凯航空，KN=中国联航，SC=山东航空，TV=西藏航空，EU=成都航空，G5=华夏航空，JR=天津航空，NS=河北航空，JD=首都航空，ZH=深圳航空，PN=西部航空，CO=长龙航空
+    alias: []
+    sync: true
+  - name: supplier_id
+    role: id
+    description: supplier_id
+    alias: []
+    sync: false
+  - name: departure_hub_id
+    role: id
+    description: departure_hub_id
+    alias: []
+    sync: false
+  - name: arrival_hub_id
+    role: id
+    description: arrival_hub_id
+    alias: []
+    sync: false
+  - name: departure_area_id
+    role: id
+    description: departure_area_id
+    alias: []
+    sync: false
+  - name: arrival_area_id
+    role: id
+    description: arrival_area_id
+    alias: []
+    sync: false
+  - name: duration_minutes
+    role: metric
+    description: duration_minutes
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: flight_departures
+  role: dimension
+  description: 航班实例表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: flight_route_id
+    role: id
+    description: flight_route_id
+    alias: []
+    sync: false
+  - name: departure_instance_code
+    role: dimension
+    description: departure_instance_code
+    alias: []
+    sync: true
+  - name: departure_time
+    role: time
+    description: departure_time
+    alias: []
+    sync: false
+  - name: arrival_time
+    role: time
+    description: arrival_time
+    alias: []
+    sync: false
+  - name: rule_payload
+    role: attribute
+    description: rule_payload
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 班次状态枚举：scheduled=已排班，cancelled=已取消，done=已完成
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: flight_cabin_inventory
+  role: fact
+  description: 航班舱位库存
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: flight_departure_id
+    role: id
+    description: flight_departure_id
+    alias: []
+    sync: false
+  - name: cabin_class_code
+    role: dimension
+    description: 舱位等级枚举：economy=经济舱，business=商务舱
+    alias: []
+    sync: true
+  - name: currency_code
+    role: dimension
+    description: currency_code
+    alias: []
+    sync: true
+  - name: sale_price_amount
+    role: metric
+    description: sale_price_amount
+    alias: []
+    sync: false
+  - name: settlement_price_amount
+    role: metric
+    description: settlement_price_amount
+    alias: []
+    sync: false
+  - name: total_inventory
+    role: metric
+    description: total_inventory
+    alias: []
+    sync: false
+  - name: available_inventory
+    role: metric
+    description: available_inventory
+    alias: []
+    sync: false
+  - name: reserved_inventory
+    role: metric
+    description: reserved_inventory
+    alias: []
+    sync: false
+  - name: sold_inventory
+    role: metric
+    description: sold_inventory
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: train_routes
+  role: dimension
+  description: 火车线路表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: route_code
+    role: dimension
+    description: route_code
+    alias: []
+    sync: true
+  - name: train_no
+    role: attribute
+    description: train_no
+    alias: []
+    sync: false
+  - name: supplier_id
+    role: id
+    description: supplier_id
+    alias: []
+    sync: false
+  - name: departure_hub_id
+    role: id
+    description: departure_hub_id
+    alias: []
+    sync: false
+  - name: arrival_hub_id
+    role: id
+    description: arrival_hub_id
+    alias: []
+    sync: false
+  - name: departure_area_id
+    role: id
+    description: departure_area_id
+    alias: []
+    sync: false
+  - name: arrival_area_id
+    role: id
+    description: arrival_area_id
+    alias: []
+    sync: false
+  - name: duration_minutes
+    role: metric
+    description: duration_minutes
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: train_departures
+  role: dimension
+  description: 火车班次实例表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: train_route_id
+    role: id
+    description: train_route_id
+    alias: []
+    sync: false
+  - name: departure_instance_code
+    role: dimension
+    description: departure_instance_code
+    alias: []
+    sync: true
+  - name: departure_time
+    role: time
+    description: departure_time
+    alias: []
+    sync: false
+  - name: arrival_time
+    role: time
+    description: arrival_time
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 班次状态枚举：scheduled=已排班，cancelled=已取消，done=已完成
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: train_seat_inventory
+  role: fact
+  description: 火车席位库存
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: train_departure_id
+    role: id
+    description: train_departure_id
+    alias: []
+    sync: false
+  - name: seat_class_code
+    role: dimension
+    description: 席位等级枚举：second_class=二等座，first_class=一等座，business=商务座
+    alias: []
+    sync: true
+  - name: currency_code
+    role: dimension
+    description: currency_code
+    alias: []
+    sync: true
+  - name: sale_price_amount
+    role: metric
+    description: sale_price_amount
+    alias: []
+    sync: false
+  - name: settlement_price_amount
+    role: metric
+    description: settlement_price_amount
+    alias: []
+    sync: false
+  - name: total_inventory
+    role: metric
+    description: total_inventory
+    alias: []
+    sync: false
+  - name: available_inventory
+    role: metric
+    description: available_inventory
+    alias: []
+    sync: false
+  - name: reserved_inventory
+    role: metric
+    description: reserved_inventory
+    alias: []
+    sync: false
+  - name: sold_inventory
+    role: metric
+    description: sold_inventory
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: bus_routes
+  role: dimension
+  description: 汽车线路表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: route_code
+    role: dimension
+    description: route_code
+    alias: []
+    sync: true
+  - name: route_name
+    role: dimension
+    description: route_name
+    alias: []
+    sync: false
+  - name: supplier_id
+    role: id
+    description: supplier_id
+    alias: []
+    sync: false
+  - name: departure_hub_id
+    role: id
+    description: departure_hub_id
+    alias: []
+    sync: false
+  - name: arrival_hub_id
+    role: id
+    description: arrival_hub_id
+    alias: []
+    sync: false
+  - name: departure_area_id
+    role: id
+    description: departure_area_id
+    alias: []
+    sync: false
+  - name: arrival_area_id
+    role: id
+    description: arrival_area_id
+    alias: []
+    sync: false
+  - name: duration_minutes
+    role: metric
+    description: duration_minutes
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: bus_departures
+  role: dimension
+  description: 汽车班次实例表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: bus_route_id
+    role: id
+    description: bus_route_id
+    alias: []
+    sync: false
+  - name: departure_instance_code
+    role: dimension
+    description: departure_instance_code
+    alias: []
+    sync: true
+  - name: departure_time
+    role: time
+    description: departure_time
+    alias: []
+    sync: false
+  - name: arrival_time
+    role: time
+    description: arrival_time
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 班次状态枚举：scheduled=已排班，cancelled=已取消，done=已完成
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: bus_seat_inventory
+  role: fact
+  description: 汽车席位库存
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: bus_departure_id
+    role: id
+    description: bus_departure_id
+    alias: []
+    sync: false
+  - name: seat_class_code
+    role: dimension
+    description: 席位等级枚举：coach=大巴
+    alias: []
+    sync: true
+  - name: currency_code
+    role: dimension
+    description: currency_code
+    alias: []
+    sync: true
+  - name: sale_price_amount
+    role: metric
+    description: sale_price_amount
+    alias: []
+    sync: false
+  - name: settlement_price_amount
+    role: metric
+    description: settlement_price_amount
+    alias: []
+    sync: false
+  - name: total_inventory
+    role: metric
+    description: total_inventory
+    alias: []
+    sync: false
+  - name: available_inventory
+    role: metric
+    description: available_inventory
+    alias: []
+    sync: false
+  - name: reserved_inventory
+    role: metric
+    description: reserved_inventory
+    alias: []
+    sync: false
+  - name: sold_inventory
+    role: metric
+    description: sold_inventory
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: transfer_services
+  role: dimension
+  description: 接送服务表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: service_code
+    role: dimension
+    description: service_code
+    alias: []
+    sync: true
+  - name: service_name
+    role: dimension
+    description: service_name
+    alias: []
+    sync: false
+  - name: service_type_code
+    role: dimension
+    description: 服务类型枚举：airport_pickup=机场接机，airport_dropoff=机场送机，charter_daily=包车一日游，station_transfer=车站接送
+    alias: []
+    sync: true
+  - name: area_id
+    role: id
+    description: area_id
+    alias: []
+    sync: false
+  - name: vehicle_type_code
+    role: dimension
+    description: 车型枚举：economy=经济型，comfort=舒适型，business=商务型，van=商务车
+    alias: []
+    sync: true
+  - name: passenger_capacity
+    role: metric
+    description: passenger_capacity
+    alias: []
+    sync: false
+  - name: supplier_id
+    role: id
+    description: supplier_id
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: transfer_service_area_rules
+  role: dimension
+  description: 接送服务区域规则
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: transfer_service_id
+    role: id
+    description: transfer_service_id
+    alias: []
+    sync: false
+  - name: pickup_area_id
+    role: id
+    description: pickup_area_id
+    alias: []
+    sync: false
+  - name: dropoff_area_id
+    role: id
+    description: dropoff_area_id
+    alias: []
+    sync: false
+  - name: price_amount
+    role: metric
+    description: price_amount
+    alias: []
+    sync: false
+  - name: min_price_amount
+    role: metric
+    description: min_price_amount
+    alias: []
+    sync: false
+  - name: rule_payload
+    role: attribute
+    description: rule_payload
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: transfer_capacity_calendar
+  role: dimension
+  description: 接送服务容量日历
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: transfer_service_id
+    role: id
+    description: transfer_service_id
+    alias: []
+    sync: false
+  - name: business_date
+    role: time
+    description: business_date
+    alias: []
+    sync: false
+  - name: total_inventory
+    role: metric
+    description: total_inventory
+    alias: []
+    sync: false
+  - name: available_inventory
+    role: metric
+    description: available_inventory
+    alias: []
+    sync: false
+  - name: reserved_inventory
+    role: metric
+    description: reserved_inventory
+    alias: []
+    sync: false
+  - name: sold_inventory
+    role: metric
+    description: sold_inventory
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: coupon_templates
+  role: dimension
+  description: 优惠券模板
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: template_code
+    role: dimension
+    description: template_code
+    alias: []
+    sync: true
+  - name: template_name
+    role: dimension
+    description: template_name
+    alias: []
+    sync: false
+  - name: coupon_type_code
+    role: dimension
+    description: 券类型枚举：HOTEL_ROOM_CASH=酒店满减券，HOTEL_ROOM_DISCOUNT=酒店折扣券，SCENIC_TICKET_CASH=景点满减券，SCENIC_TICKET_DISCOUNT=景点折扣券，FLIGHT_CABIN_CASH=机票满减券，FLIGHT_CABIN_DISCOUNT=机票折扣券，TRAIN_SEAT_CASH=火车票满减券，TRAIN_SEAT_DISCOUNT=火车票折扣券，BUS_SEAT_CASH=汽车票满减券，BUS_SEAT_DISCOUNT=汽车票折扣券，TRANSFER_SERVICE_CASH=接送满减券，TRANSFER_SERVICE_DISCOUNT=接送折扣券
+    alias: []
+    sync: true
+  - name: applicable_product_type
+    role: dimension
+    description: 适用商品类型枚举：hotel_room=酒店房型，scenic_ticket=景点票种，flight_cabin=航班舱位，train_seat=火车席位，bus_seat=汽车席位，transfer_service=接送服务
+    alias: []
+    sync: true
+  - name: applicable_supplier_id
+    role: id
+    description: applicable_supplier_id
+    alias: []
+    sync: false
+  - name: currency_code
+    role: dimension
+    description: currency_code
+    alias: []
+    sync: true
+  - name: min_spend_amount
+    role: metric
+    description: min_spend_amount
+    alias: []
+    sync: false
+  - name: discount_amount
+    role: metric
+    description: discount_amount
+    alias: []
+    sync: false
+  - name: max_discount_amount
+    role: metric
+    description: max_discount_amount
+    alias: []
+    sync: false
+  - name: valid_from
+    role: time
+    description: valid_from
+    alias: []
+    sync: false
+  - name: valid_until
+    role: time
+    description: valid_until
+    alias: []
+    sync: false
+  - name: total_quantity
+    role: metric
+    description: total_quantity
+    alias: []
+    sync: false
+  - name: per_user_limit
+    role: metric
+    description: per_user_limit
+    alias: []
+    sync: false
+  - name: rule_payload
+    role: attribute
+    description: rule_payload
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: user_coupons
+  role: dimension
+  description: 用户优惠券
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: template_id
+    role: id
+    description: template_id
+    alias: []
+    sync: false
+  - name: user_id
+    role: id
+    description: user_id
+    alias: []
+    sync: false
+  - name: coupon_code
+    role: dimension
+    description: coupon_code
+    alias: []
+    sync: true
+  - name: currency_code
+    role: dimension
+    description: currency_code
+    alias: []
+    sync: true
+  - name: min_spend_amount
+    role: metric
+    description: min_spend_amount
+    alias: []
+    sync: false
+  - name: discount_amount
+    role: metric
+    description: discount_amount
+    alias: []
+    sync: false
+  - name: max_discount_amount
+    role: metric
+    description: max_discount_amount
+    alias: []
+    sync: false
+  - name: valid_from
+    role: time
+    description: valid_from
+    alias: []
+    sync: false
+  - name: valid_until
+    role: time
+    description: valid_until
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 优惠券状态枚举：available=可用，used=已使用，expired=已过期
+    alias: []
+    sync: true
+  - name: used_at
+    role: time
+    description: used_at
+    alias: []
+    sync: false
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: promotions
+  role: dimension
+  description: 促销活动
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: promotion_code
+    role: dimension
+    description: promotion_code
+    alias: []
+    sync: true
+  - name: promotion_name
+    role: dimension
+    description: promotion_name
+    alias: []
+    sync: false
+  - name: promotion_type_code
+    role: dimension
+    description: 活动类型枚举：direct_discount=直接折扣，min_spend_discount=满减，flashsale=秒杀，bundling=套餐
+    alias: []
+    sync: true
+  - name: currency_code
+    role: dimension
+    description: currency_code
+    alias: []
+    sync: true
+  - name: start_time
+    role: time
+    description: start_time
+    alias: []
+    sync: false
+  - name: end_time
+    role: time
+    description: end_time
+    alias: []
+    sync: false
+  - name: config_payload
+    role: attribute
+    description: config_payload
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 活动状态枚举：active=有效，inactive=无效，paused=暂停，finished=已结束
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: promotion_rules
+  role: dimension
+  description: 促销规则
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: promotion_id
+    role: id
+    description: promotion_id
+    alias: []
+    sync: false
+  - name: rule_name
+    role: dimension
+    description: rule_name
+    alias: []
+    sync: false
+  - name: trigger_type_code
+    role: dimension
+    description: 触发类型枚举：min_spend=满额触发，first_order=首单触发，time_window=时段触发，product_count=数量触发
+    alias: []
+    sync: true
+  - name: trigger_payload
+    role: attribute
+    description: trigger_payload
+    alias: []
+    sync: false
+  - name: benefit_type_code
+    role: dimension
+    description: 优惠类型枚举：discount_amount=固定优惠金额，discount_rate=折扣率，gift_item=赠品
+    alias: []
+    sync: true
+  - name: benefit_payload
+    role: attribute
+    description: benefit_payload
+    alias: []
+    sync: false
+  - name: sort_order
+    role: metric
+    description: sort_order
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: promotion_bindings
+  role: dimension
+  description: 促销绑定
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: promotion_id
+    role: id
+    description: promotion_id
+    alias: []
+    sync: false
+  - name: product_type_code
+    role: dimension
+    description: 商品类型枚举：hotel_room=酒店房型，scenic_ticket=景点票种，flight_cabin=航班舱位，train_seat=火车席位，bus_seat=汽车席位，transfer_service=接送服务
+    alias: []
+    sync: true
+  - name: target_id
+    role: id
+    description: target_id
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 状态枚举：active=有效，inactive=无效
+    alias: []
+    sync: true
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: orders
+  role: fact
+  description: 订单主表
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: order_no
+    role: attribute
+    description: order_no
+    alias: []
+    sync: false
+  - name: user_id
+    role: id
+    description: user_id
+    alias: []
+    sync: false
+  - name: order_type_code
+    role: dimension
+    description: 订单类型枚举：hotel_room=酒店订单，scenic_ticket=景点门票订单，flight_cabin=机票订单，train_seat=火车票订单，bus_seat=汽车票订单，transfer_service=接送服务订单
+    alias: []
+    sync: true
+  - name: status_code
+    role: dimension
+    description: 订单状态枚举：pending_payment=待支付，cancelled=已取消，paid=已支付，in_progress=进行中，finished=已结束
+    alias: []
+    sync: true
+  - name: currency_code
+    role: dimension
+    description: currency_code
+    alias: []
+    sync: true
+  - name: goods_amount
+    role: metric
+    description: goods_amount
+    alias: []
+    sync: false
+  - name: marketing_discount_amount
+    role: metric
+    description: marketing_discount_amount
+    alias: []
+    sync: false
+  - name: coupon_discount_amount
+    role: metric
+    description: coupon_discount_amount
+    alias: []
+    sync: false
+  - name: point_discount_amount
+    role: metric
+    description: point_discount_amount
+    alias: []
+    sync: false
+  - name: payable_amount
+    role: metric
+    description: payable_amount
+    alias: []
+    sync: false
+  - name: paid_amount
+    role: metric
+    description: paid_amount
+    alias: []
+    sync: false
+  - name: refunded_amount
+    role: metric
+    description: refunded_amount
+    alias: []
+    sync: false
+  - name: settlement_amount
+    role: metric
+    description: settlement_amount
+    alias: []
+    sync: false
+  - name: source_channel_code
+    role: dimension
+    description: source_channel_code
+    alias: []
+    sync: true
+  - name: cancel_reason
+    role: attribute
+    description: cancel_reason
+    alias: []
+    sync: false
+  - name: paid_at
+    role: time
+    description: paid_at
+    alias: []
+    sync: false
+  - name: finalized_at
+    role: time
+    description: finalized_at
+    alias: []
+    sync: false
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: order_items
+  role: fact
+  description: 订单明细
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: order_id
+    role: id
+    description: order_id
+    alias: []
+    sync: false
+  - name: user_id
+    role: id
+    description: user_id
+    alias: []
+    sync: false
+  - name: traveler_id
+    role: id
+    description: traveler_id
+    alias: []
+    sync: false
+  - name: product_type_code
+    role: dimension
+    description: 商品类型枚举：hotel_room=酒店房型，scenic_ticket=景点票种，flight_cabin=航班舱位，train_seat=火车席位，bus_seat=汽车席位，transfer_service=接送服务
+    alias: []
+    sync: true
+  - name: product_id
+    role: id
+    description: product_id
+    alias: []
+    sync: false
+  - name: product_name
+    role: dimension
+    description: product_name
+    alias: []
+    sync: false
+  - name: sale_amount
+    role: metric
+    description: sale_amount
+    alias: []
+    sync: false
+  - name: refunded_amount
+    role: metric
+    description: refunded_amount
+    alias: []
+    sync: false
+  - name: settlement_amount
+    role: metric
+    description: settlement_amount
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 明细状态枚举：pending_payment=待支付，cancelled=已取消，paid=已支付，ticketed=已出票，refunded=已退款，completed=已完成
+    alias: []
+    sync: true
+  - name: travel_time
+    role: time
+    description: travel_time
+    alias: []
+    sync: false
+  - name: travel_end_time
+    role: time
+    description: travel_end_time
+    alias: []
+    sync: false
+  - name: cancelled_at
+    role: time
+    description: cancelled_at
+    alias: []
+    sync: false
+  - name: paid_at
+    role: time
+    description: paid_at
+    alias: []
+    sync: false
+  - name: refunded_at
+    role: time
+    description: refunded_at
+    alias: []
+    sync: false
+  - name: completed_at
+    role: time
+    description: completed_at
+    alias: []
+    sync: false
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: order_coupon_usages
+  role: fact
+  description: 订单用券记录
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: order_id
+    role: id
+    description: order_id
+    alias: []
+    sync: false
+  - name: order_item_id
+    role: id
+    description: order_item_id
+    alias: []
+    sync: false
+  - name: user_id
+    role: id
+    description: user_id
+    alias: []
+    sync: false
+  - name: template_id
+    role: id
+    description: template_id
+    alias: []
+    sync: false
+  - name: user_coupon_id
+    role: id
+    description: user_coupon_id
+    alias: []
+    sync: false
+  - name: order_type_code
+    role: dimension
+    description: 订单类型枚举：hotel_room=酒店订单，scenic_ticket=景点门票订单，flight_cabin=机票订单，train_seat=火车票订单，bus_seat=汽车票订单，transfer_service=接送服务订单
+    alias: []
+    sync: true
+  - name: discount_amount
+    role: metric
+    description: discount_amount
+    alias: []
+    sync: false
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: order_promotion_details
+  role: fact
+  description: 订单促销明细
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: order_id
+    role: id
+    description: order_id
+    alias: []
+    sync: false
+  - name: order_item_id
+    role: id
+    description: order_item_id
+    alias: []
+    sync: false
+  - name: order_type_code
+    role: dimension
+    description: 订单类型枚举：hotel_room=酒店订单，scenic_ticket=景点门票订单，flight_cabin=机票订单，train_seat=火车票订单，bus_seat=汽车票订单，transfer_service=接送服务订单
+    alias: []
+    sync: true
+  - name: promotion_id
+    role: id
+    description: promotion_id
+    alias: []
+    sync: false
+  - name: promotion_binding_id
+    role: id
+    description: promotion_binding_id
+    alias: []
+    sync: false
+  - name: promotion_rule_id
+    role: id
+    description: promotion_rule_id
+    alias: []
+    sync: false
+  - name: discount_amount
+    role: metric
+    description: discount_amount
+    alias: []
+    sync: false
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: order_point_usages
+  role: fact
+  description: 订单积分使用
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: order_id
+    role: id
+    description: order_id
+    alias: []
+    sync: false
+  - name: user_id
+    role: id
+    description: user_id
+    alias: []
+    sync: false
+  - name: point_ledger_id
+    role: id
+    description: point_ledger_id
+    alias: []
+    sync: false
+  - name: points_used
+    role: metric
+    description: points_used
+    alias: []
+    sync: false
+  - name: discount_amount
+    role: metric
+    description: discount_amount
+    alias: []
+    sync: false
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: payments
+  role: fact
+  description: 支付记录
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: payment_no
+    role: attribute
+    description: payment_no
+    alias: []
+    sync: false
+  - name: order_id
+    role: id
+    description: order_id
+    alias: []
+    sync: false
+  - name: user_id
+    role: id
+    description: user_id
+    alias: []
+    sync: false
+  - name: payment_method_code
+    role: dimension
+    description: 支付方式枚举：alipay=支付宝，wechat=微信支付，unionpay=银联
+    alias: []
+    sync: true
+  - name: currency_code
+    role: dimension
+    description: currency_code
+    alias: []
+    sync: true
+  - name: amount
+    role: metric
+    description: amount
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 支付状态枚举：pending=待支付，success=支付成功，failed=支付失败，closed=已关闭
+    alias: []
+    sync: true
+  - name: paid_at
+    role: time
+    description: paid_at
+    alias: []
+    sync: false
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: refund_requests
+  role: fact
+  description: 退款申请
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: refund_request_no
+    role: attribute
+    description: refund_request_no
+    alias: []
+    sync: false
+  - name: order_id
+    role: id
+    description: order_id
+    alias: []
+    sync: false
+  - name: order_item_id
+    role: id
+    description: order_item_id
+    alias: []
+    sync: false
+  - name: user_id
+    role: id
+    description: user_id
+    alias: []
+    sync: false
+  - name: requested_amount
+    role: metric
+    description: requested_amount
+    alias: []
+    sync: false
+  - name: approved_amount
+    role: metric
+    description: approved_amount
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 退款申请状态枚举：pending=待处理，approved=审核通过，rejected=审核驳回，success=退款完成
+    alias: []
+    sync: true
+  - name: requested_at
+    role: time
+    description: requested_at
+    alias: []
+    sync: false
+  - name: processed_at
+    role: time
+    description: processed_at
+    alias: []
+    sync: false
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+- name: refund_records
+  role: fact
+  description: 退款记录
+  columns:
+  - name: id
+    role: id
+    description: id
+    alias: []
+    sync: false
+  - name: refund_no
+    role: attribute
+    description: refund_no
+    alias: []
+    sync: false
+  - name: refund_request_id
+    role: id
+    description: refund_request_id
+    alias: []
+    sync: false
+  - name: order_id
+    role: id
+    description: order_id
+    alias: []
+    sync: false
+  - name: order_item_id
+    role: id
+    description: order_item_id
+    alias: []
+    sync: false
+  - name: user_id
+    role: id
+    description: user_id
+    alias: []
+    sync: false
+  - name: payment_id
+    role: id
+    description: payment_id
+    alias: []
+    sync: false
+  - name: currency_code
+    role: dimension
+    description: currency_code
+    alias: []
+    sync: true
+  - name: amount
+    role: metric
+    description: amount
+    alias: []
+    sync: false
+  - name: status_code
+    role: dimension
+    description: 退款状态枚举：pending=退款处理中，success=退款成功，failed=退款失败
+    alias: []
+    sync: true
+  - name: processed_at
+    role: time
+    description: processed_at
+    alias: []
+    sync: false
+  - name: created_at
+    role: time
+    description: created_at
+    alias: []
+    sync: false
+  - name: updated_at
+    role: time
+    description: updated_at
+    alias: []
+    sync: false
+metrics:
+- name: 订单量
+  description: 订单总数（订单表行数计数）
+  relevant_columns:
+  - orders.id
+  alias:
+  - 订单数
+  - 下单量
+  - order_count
+- name: 收入金额
+  description: 订单实付金额合计（orders.paid_amount 求和）
+  relevant_columns:
+  - orders.paid_amount
+  alias:
+  - GMV
+  - 营收
+  - 销售额
+  - 成交金额
+- name: 退款金额
+  description: 退款打款金额合计（refund_records.amount 求和）
+  relevant_columns:
+  - refund_records.amount
+  alias:
+  - 退款额
+  - 退款总额
+- name: 优惠金额
+  description: 券核销 + 促销减免合计
+  relevant_columns:
+  - order_coupon_usages.discount_amount
+  - order_promotion_details.discount_amount
+  alias:
+  - 优惠抵扣
+  - 优惠总额
+- name: 转化率
+  description: 已支付订单数 / 创建订单数（基于 orders.status_code 统计）
+  relevant_columns:
+  - orders.status_code
+  - orders.id
+  alias:
+  - 支付转化
+  - 支付转化率
+- name: 退款率
+  description: 发生退款的订单数 / 订单总数
+  relevant_columns:
+  - refund_requests.id
+  - orders.id
+  alias:
+  - 退款比例
+- name: 客单价
+  description: 收入金额 / 订单量
+  relevant_columns:
+  - orders.paid_amount
+  - orders.id
+  alias:
+  - AOV
+  - 平均订单金额

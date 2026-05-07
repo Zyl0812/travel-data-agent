@@ -19,10 +19,13 @@ class DWMySQLRepository:
     async def get_column_values(
         self, table_name: str, column_name: str, limit: int = 10
     ) -> list[str]:
-        """根据表名和字段名获取该字段部分取值"""
+        """根据表名和字段名获取该字段部分取值。
+        统一转字符串以便后续 JSON 序列化（datetime/Decimal 等无法直接入 JSON 列）。
+        """
         sql = f"SELECT DISTINCT {column_name} FROM {table_name} LIMIT {limit}"
         result: Result = await self.session.execute(text(sql))
-        return cast(list[str], result.scalars().fetchall())
+        rows = result.scalars().fetchall()
+        return [str(v) for v in rows if v is not None]
         
     async def get_db_info(self) -> dict[str, str]:
         """获取数据库信息"""
