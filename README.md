@@ -9,14 +9,17 @@
 - **智能 SQL 生成**：基于 LLM 自动生成 SQL 并执行
 - **多种分析场景**：支持简单查询、排名分析、趋势分析、对比分析
 - **可视化展示**：支持表格、柱状图、折线图、饼图等多种展示方式
+- **Pipeline 可视化**：实时展示查询处理流程
+- **SQL 语法高亮**：生成的 SQL 语法高亮显示
 
 ## 技术栈
 
 - **后端**：FastAPI + LangGraph + SQLAlchemy
-- **数据库**：MySQL 8.0 + Qdrant + Elasticsearch
+- **数据库**：MySQL 8.0 + Qdrant + Elasticsearch（IK 中文分词）
 - **LLM**：DeepSeek / OpenRouter 兼容接口
-- **Embedding**：BGE-Large-ZH-v1.5
+- **Embedding**：BGE-Large-ZH-v1.5（支持 CPU/GPU）
 - **前端**：原生 HTML + CSS + JavaScript + Chart.js
+- **包管理**：uv（Python 3.13+）
 
 ## 快速开始
 
@@ -24,8 +27,8 @@
 
 ```bash
 # 克隆仓库
-git clone <repository-url>
-cd data-agent
+git clone https://github.com/Zyl0812/travel-data-agent.git
+cd travel-data-agent
 
 # 安装依赖（需要 Python 3.13+）
 uv sync
@@ -37,7 +40,7 @@ uv sync
 # 复制示例配置
 cp conf/app_config.yaml.example conf/app_config.yaml
 
-# 编辑配置文件，填入你的配置
+# 编辑配置文件
 # - 数据库连接信息
 # - LLM API Key
 # - Embedding 模型路径
@@ -77,7 +80,7 @@ uv run python -m main
 data-agent/
 ├── app/
 │   ├── agent/           # LangGraph 工作流
-│   │   ├── nodes/       # 处理节点
+│   │   ├── nodes/       # 处理节点（12个）
 │   │   ├── graph.py     # 图编排
 │   │   └── state.py     # 状态定义
 │   ├── api/             # FastAPI 路由
@@ -96,7 +99,7 @@ data-agent/
 ├── conf/                # 配置文件
 ├── docker/              # Docker 配置
 ├── test/                # 测试和评测
-├── travel-data/         # 业务数据生成
+├── travel-data/         # 业务数据生成（可选）
 ├── docker-compose.yaml  # 服务编排
 ├── main.py              # 应用入口
 └── pyproject.toml       # 项目配置
@@ -109,6 +112,7 @@ data-agent/
 | `/` | GET | 前端页面 |
 | `/api/query` | POST | 流式查询（SSE） |
 | `/api/query/json` | POST | JSON 查询 |
+| `/docs` | GET | API 文档（Swagger） |
 
 ### 查询示例
 
